@@ -1,0 +1,8 @@
+apiVersion: v2
+name: kuberay-apiserver
+description: A Helm chart for kuberay-apiserver
+version: "0"
+dependencies:
+- name: kuberay-apiserver
+  repository: https://ray-project.github.io/kuberay-helm/
+  version: 1.0.0

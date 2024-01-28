@@ -1,0 +1,9 @@
+apiVersion: v2
+description: |
+  Fast distributed SQL query engine for big data analytics that helps you explore your data universe
+name: trino
+version: "0"
+dependencies:
+- name: trino
+  repository: https://trinodb.github.io/charts/
+  version: 0.15.0

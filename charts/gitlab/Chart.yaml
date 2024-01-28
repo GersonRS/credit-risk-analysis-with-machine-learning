@@ -1,0 +1,9 @@
+apiVersion: v2
+dependencies:
+- name: gitlab
+  repository: https://charts.gitlab.io/
+  version: 7.7.0
+description: |
+  This chart installs Gitlab
+name: gitlab
+version: "0"

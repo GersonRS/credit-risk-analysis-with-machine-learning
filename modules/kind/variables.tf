@@ -27,6 +27,6 @@ variable "nodes" {
 
   validation {
     condition     = length(var.nodes) >= 3
-    error_message = "A minimum of 3 nodes is required because of the way the other gitops Stack modules are configured."
+    error_message = "A minimum of 3 nodes is required because of the way the other GitOps Stack modules are configured."
   }
 }
