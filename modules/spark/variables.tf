@@ -85,3 +85,9 @@ variable "dependency_ids" {
   type        = map(string)
   default     = {}
 }
+
+variable "project_source_repo" {
+  description = "Repository allowed to be scraped in this AppProject."
+  type        = string
+  default     = "*"
+}
