@@ -11,4 +11,5 @@ locals {
   app_autosync           = true ? { allow_empty = false, prune = true, self_heal = true } : {}
   target_revision        = "develop"
   airflow_fernetKey      = base64encode(resource.random_password.airflow_fernetKey.result)
+  project_source_repo    = "https://github.com/GersonRS/credit-risk-analysis-with-machine-learning.git"
 }

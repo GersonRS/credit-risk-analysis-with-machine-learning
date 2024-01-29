@@ -15,7 +15,8 @@ resource "argocd_project" "this" {
 
   spec {
     description  = "Ray application project for cluster ${var.destination_cluster}"
-    source_repos = ["https://github.com/GersonRS/credit-risk-analysis-with-machine-learning.git"]
+    source_repos = [var.project_source_repo]
+
 
     destination {
       name      = var.destination_cluster
@@ -58,7 +59,7 @@ resource "argocd_application" "operator-crds" {
     project = var.argocd_project == null ? argocd_project.this[0].metadata.0.name : var.argocd_project
 
     source {
-      repo_url        = "https://github.com/GersonRS/credit-risk-analysis-with-machine-learning.git"
+      repo_url        = var.project_source_repo
       path            = "charts/kuberay-operator/crds"
       target_revision = var.target_revision
     }
@@ -120,7 +121,7 @@ resource "argocd_application" "operator" {
     project = var.argocd_project == null ? argocd_project.this[0].metadata.0.name : var.argocd_project
 
     source {
-      repo_url        = "https://github.com/GersonRS/credit-risk-analysis-with-machine-learning.git"
+      repo_url        = var.project_source_repo
       path            = "charts/kuberay-operator"
       target_revision = var.target_revision
       helm {
@@ -184,7 +185,7 @@ resource "argocd_application" "this" {
     project = var.argocd_project == null ? argocd_project.this[0].metadata.0.name : var.argocd_project
 
     source {
-      repo_url        = "https://github.com/GersonRS/credit-risk-analysis-with-machine-learning.git"
+      repo_url        = var.project_source_repo
       path            = "charts/ray-cluster"
       target_revision = var.target_revision
       helm {

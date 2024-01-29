@@ -52,7 +52,7 @@ resource "argocd_application" "this" {
     project = argocd_project.this.metadata.0.name
 
     source {
-      repo_url        = "https://github.com/GersonRS/credit-risk-analysis-with-machine-learning.git"
+      repo_url        = var.project_source_repo
       path            = "charts/kafka-ui"
       target_revision = var.target_revision
       helm {

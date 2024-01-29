@@ -21,6 +21,7 @@ module "traefik" {
   argocd_namespace       = module.argocd_bootstrap.argocd_namespace
   enable_service_monitor = local.enable_service_monitor
   target_revision        = local.target_revision
+  project_source_repo    = local.project_source_repo
   dependency_ids = {
     argocd = module.argocd_bootstrap.id
   }
@@ -31,18 +32,20 @@ module "cert-manager" {
   argocd_namespace       = module.argocd_bootstrap.argocd_namespace
   enable_service_monitor = local.enable_service_monitor
   target_revision        = local.target_revision
+  project_source_repo    = local.project_source_repo
   dependency_ids = {
     argocd = module.argocd_bootstrap.id
   }
 }
 
 module "keycloak" {
-  source           = "./modules/keycloak"
-  cluster_name     = local.cluster_name
-  base_domain      = local.base_domain
-  cluster_issuer   = local.cluster_issuer
-  argocd_namespace = module.argocd_bootstrap.argocd_namespace
-  target_revision  = local.target_revision
+  source              = "./modules/keycloak"
+  cluster_name        = local.cluster_name
+  base_domain         = local.base_domain
+  cluster_issuer      = local.cluster_issuer
+  argocd_namespace    = module.argocd_bootstrap.argocd_namespace
+  target_revision     = local.target_revision
+  project_source_repo = local.project_source_repo
   dependency_ids = {
     traefik      = module.traefik.id
     cert-manager = module.cert-manager.id
@@ -50,10 +53,11 @@ module "keycloak" {
 }
 
 module "oidc" {
-  source         = "./modules/oidc"
-  cluster_name   = local.cluster_name
-  base_domain    = local.base_domain
-  cluster_issuer = local.cluster_issuer
+  source              = "./modules/oidc"
+  cluster_name        = local.cluster_name
+  base_domain         = local.base_domain
+  cluster_issuer      = local.cluster_issuer
+  project_source_repo = local.project_source_repo
   dependency_ids = {
     keycloak = module.keycloak.id
   }
@@ -68,6 +72,7 @@ module "minio" {
   enable_service_monitor = local.enable_service_monitor
   oidc                   = module.oidc.oidc
   target_revision        = local.target_revision
+  project_source_repo    = local.project_source_repo
   dependency_ids = {
     traefik      = module.traefik.id
     cert-manager = module.cert-manager.id
@@ -84,7 +89,8 @@ module "minio" {
 #     access_key  = module.minio.minio_root_user_credentials.username
 #     secret_key  = module.minio.minio_root_user_credentials.password
 #   }
-#   target_revision = local.target_revision
+#   target_revision     = local.target_revision
+#   project_source_repo = local.project_source_repo
 #   dependency_ids = {
 #     minio = module.minio.id
 #   }
@@ -105,7 +111,8 @@ module "minio" {
 #   thanos = {
 #     oidc = module.oidc.oidc
 #   }
-#   target_revision = local.target_revision
+#   target_revision     = local.target_revision
+#   project_source_repo = local.project_source_repo
 #   dependency_ids = {
 #     argocd       = module.argocd_bootstrap.id
 #     traefik      = module.traefik.id
@@ -137,7 +144,8 @@ module "kube-prometheus-stack" {
   grafana = {
     oidc = module.oidc.oidc
   }
-  target_revision = local.target_revision
+  target_revision     = local.target_revision
+  project_source_repo = local.project_source_repo
   dependency_ids = {
     traefik      = module.traefik.id
     cert-manager = module.cert-manager.id
@@ -154,6 +162,7 @@ module "reflector" {
   argocd_namespace       = module.argocd_bootstrap.argocd_namespace
   enable_service_monitor = local.enable_service_monitor
   target_revision        = local.target_revision
+  project_source_repo    = local.project_source_repo
   dependency_ids = {
     argocd = module.argocd_bootstrap.id
   }
@@ -167,24 +176,26 @@ module "postgresql" {
   argocd_namespace       = module.argocd_bootstrap.argocd_namespace
   enable_service_monitor = local.enable_service_monitor
   target_revision        = local.target_revision
+  project_source_repo    = local.project_source_repo
   dependency_ids = {
     traefik = module.traefik.id
     argocd  = module.argocd_bootstrap.id
   }
 }
 
-module "spark" {
-  source                 = "./modules/spark"
-  cluster_name           = local.cluster_name
-  base_domain            = local.base_domain
-  cluster_issuer         = local.cluster_issuer
-  argocd_namespace       = module.argocd_bootstrap.argocd_namespace
-  enable_service_monitor = local.enable_service_monitor
-  target_revision        = local.target_revision
-  dependency_ids = {
-    argocd = module.argocd_bootstrap.id
-  }
-}
+# module "spark" {
+#   source                 = "./modules/spark"
+#   cluster_name           = local.cluster_name
+#   base_domain            = local.base_domain
+#   cluster_issuer         = local.cluster_issuer
+#   argocd_namespace       = module.argocd_bootstrap.argocd_namespace
+#   enable_service_monitor = local.enable_service_monitor
+#   target_revision        = local.target_revision
+#   project_source_repo    = local.project_source_repo
+#   dependency_ids = {
+#     argocd = module.argocd_bootstrap.id
+#   }
+# }
 
 # module "strimzi" {
 #   source                 = "./modules/strimzi"
@@ -194,6 +205,7 @@ module "spark" {
 #   argocd_namespace       = module.argocd_bootstrap.argocd_namespace
 #   enable_service_monitor = local.enable_service_monitor
 #   target_revision        = local.target_revision
+#   project_source_repo    = local.project_source_repo
 #   dependency_ids = {
 #     argocd = module.argocd_bootstrap.id
 #   }
@@ -208,6 +220,7 @@ module "spark" {
 #   enable_service_monitor = local.enable_service_monitor
 #   target_revision        = local.target_revision
 #   argocd_project         = module.strimzi.argocd_project_name
+#   project_source_repo    = local.project_source_repo
 #   dependency_ids = {
 #     argocd  = module.argocd_bootstrap.id
 #     traefik = module.traefik.id
@@ -225,6 +238,7 @@ module "spark" {
 #   target_revision        = local.target_revision
 #   argocd_project         = module.strimzi.argocd_project_name
 #   kafka_broker_name      = module.kafka.broker_name
+#   project_source_repo    = local.project_source_repo
 #   dependency_ids = {
 #     argocd = module.argocd_bootstrap.id
 #     kafka  = module.kafka.id
@@ -240,6 +254,7 @@ module "spark" {
 #   enable_service_monitor = local.enable_service_monitor
 #   target_revision        = local.target_revision
 #   kafka_broker_name      = module.kafka.broker_name
+#   project_source_repo    = local.project_source_repo
 #   dependency_ids = {
 #     argocd             = module.argocd_bootstrap.id
 #     kafka              = module.kafka.id
@@ -255,25 +270,27 @@ module "spark" {
 #   argocd_namespace       = module.argocd_bootstrap.argocd_namespace
 #   enable_service_monitor = local.enable_service_monitor
 #   target_revision        = local.target_revision
+#   project_source_repo    = local.project_source_repo
 #   dependency_ids = {
 #     argocd  = module.argocd_bootstrap.id
 #     traefik = module.traefik.id
 #   }
 # }
 
-module "vault" {
-  source                 = "./modules/vault"
-  cluster_name           = local.cluster_name
-  base_domain            = local.base_domain
-  cluster_issuer         = local.cluster_issuer
-  argocd_namespace       = module.argocd_bootstrap.argocd_namespace
-  enable_service_monitor = local.enable_service_monitor
-  target_revision        = local.target_revision
-  dependency_ids = {
-    argocd  = module.argocd_bootstrap.id
-    traefik = module.traefik.id
-  }
-}
+# module "vault" {
+#   source                 = "./modules/vault"
+#   cluster_name           = local.cluster_name
+#   base_domain            = local.base_domain
+#   cluster_issuer         = local.cluster_issuer
+#   argocd_namespace       = module.argocd_bootstrap.argocd_namespace
+#   enable_service_monitor = local.enable_service_monitor
+#   target_revision        = local.target_revision
+#   project_source_repo    = local.project_source_repo
+#   dependency_ids = {
+#     argocd  = module.argocd_bootstrap.id
+#     traefik = module.traefik.id
+#   }
+# }
 
 # module "pinot" {
 #   source                 = "./modules/pinot"
@@ -289,6 +306,7 @@ module "vault" {
 #     access_key        = module.minio.minio_root_user_credentials.username
 #     secret_access_key = module.minio.minio_root_user_credentials.password
 #   }
+#   project_source_repo = local.project_source_repo
 #   dependency_ids = {
 #     argocd  = module.argocd_bootstrap.id
 #     traefik = module.traefik.id
@@ -318,6 +336,7 @@ module "vault" {
 #     database = "curated"
 #     service  = module.postgresql.cluster_ip
 #   }
+#   project_source_repo = local.project_source_repo
 #   dependency_ids = {
 #     argocd     = module.argocd_bootstrap.id
 #     traefik    = module.traefik.id
@@ -348,6 +367,7 @@ module "mlflow" {
     database = "mlflow"
     service  = module.postgresql.cluster_dns
   }
+  project_source_repo = local.project_source_repo
   dependency_ids = {
     argocd     = module.argocd_bootstrap.id
     traefik    = module.traefik.id
@@ -356,19 +376,20 @@ module "mlflow" {
   }
 }
 
-# module "ray" {
-#   source                 = "./modules/ray"
-#   cluster_name           = local.cluster_name
-#   base_domain            = local.base_domain
-#   cluster_issuer         = local.cluster_issuer
-#   argocd_namespace       = module.argocd_bootstrap.argocd_namespace
-#   enable_service_monitor = local.enable_service_monitor
-#   target_revision        = local.target_revision
-#   dependency_ids = {
-#     argocd  = module.argocd_bootstrap.id
-#     traefik = module.traefik.id
-#   }
-# }
+# # module "ray" {
+# #   source                 = "./modules/ray"
+# #   cluster_name           = local.cluster_name
+# #   base_domain            = local.base_domain
+# #   cluster_issuer         = local.cluster_issuer
+# #   argocd_namespace       = module.argocd_bootstrap.argocd_namespace
+# #   enable_service_monitor = local.enable_service_monitor
+# #   target_revision        = local.target_revision
+# #   project_source_repo    = local.project_source_repo
+# #   dependency_ids = {
+# #     argocd  = module.argocd_bootstrap.id
+# #     traefik = module.traefik.id
+# #   }
+# # }
 
 # module "jupyterhub" {
 #   source                 = "./modules/jupyterhub"
@@ -397,6 +418,7 @@ module "mlflow" {
 #   # ray = {
 #   #   endpoint = module.ray.cluster_dns
 #   # }
+#   project_source_repo = local.project_source_repo
 #   dependency_ids = {
 #     argocd     = module.argocd_bootstrap.id
 #     traefik    = module.traefik.id
@@ -436,6 +458,7 @@ module "airflow" {
   # ray = {
   #   endpoint = module.ray.cluster_dns
   # }
+  project_source_repo = local.project_source_repo
   dependency_ids = {
     argocd     = module.argocd_bootstrap.id
     traefik    = module.traefik.id
@@ -462,6 +485,7 @@ module "airflow" {
 #     access_key        = module.minio.minio_root_user_credentials.username
 #     secret_access_key = module.minio.minio_root_user_credentials.password
 #   }
+#   project_source_repo = local.project_source_repo
 #   dependency_ids = {
 #     argocd     = module.argocd_bootstrap.id
 #     traefik    = module.traefik.id
@@ -497,7 +521,8 @@ module "argocd" {
       g, modern-gitops-stack-admins, role:admin
     EOT
   }
-  target_revision = local.target_revision
+  target_revision     = local.target_revision
+  project_source_repo = local.project_source_repo
   dependency_ids = {
     traefik               = module.traefik.id
     cert-manager          = module.cert-manager.id
@@ -507,36 +532,3 @@ module "argocd" {
     # jupyterhub            = module.jupyterhub.id
   }
 }
-
-
-# module "kubectl" {
-#   source = "magnolia-sre/kubectl-cmd/kubernetes"
-
-#   app          = "vault"
-#   cluster-name = "mycluster"
-#   credentials = {
-#     kubeconfig-path : "${path.root}/kind-config"
-#   }
-#   cmds = [<<-EOT
-#     sleep 15
-#     kubens management
-#     kubectl exec vault-0 -n management -- vault operator init \
-#     -key-shares=1 \
-#     -key-threshold=1 \
-#     -format=json > cluster-keys.json
-#     jq -r '.unseal_keys_b64[]' cluster-keys.json
-#     VAULT_UNSEAL_KEY=$(jq -r '.unseal_keys_b64[]' cluster-keys.json)
-#     sleep 3
-#     kubectl exec vault-0 -n management -- vault operator unseal $VAULT_UNSEAL_KEY
-#     sleep 3
-#     kubectl exec -ti vault-1 -n management -- vault operator raft join http://vault-0.vault-internal:8200
-#     sleep 3
-#     kubectl exec -ti vault-2 -n management -- vault operator raft join http://vault-0.vault-internal:8200
-#     sleep 3
-#     kubectl exec -ti vault-1 -n management -- vault operator unseal $VAULT_UNSEAL_KEY
-#     sleep 3
-#     kubectl exec -ti vault-2 -n management -- vault operator unseal $VAULT_UNSEAL_KEY
-#     EOT
-#   ]
-#   depends_on = [module.vault]
-# }

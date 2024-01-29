@@ -89,7 +89,6 @@ variable "dependency_ids" {
 variable "project_source_repo" {
   description = "Repository allowed to be scraped in this AppProject."
   type        = string
-  default     = "*"
 }
 
 variable "fernetKey" {
