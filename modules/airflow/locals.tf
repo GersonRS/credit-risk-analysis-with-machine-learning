@@ -236,13 +236,18 @@ locals {
 
             AUTH_ROLE_ADMIN = 'Admin'
             AUTH_ROLE_PUBLIC = 'Public'
+            AUTH_ROLE_VIEWER = 'Viewer'
             AUTH_ROLE_USER = 'User'
+
+            AUTH_USER_REGISTRATION = True
+            AUTH_USER_REGISTRATION_ROLE = AUTH_ROLE_VIEWER
 
             AUTH_ROLES_SYNC_AT_LOGIN = True
 
             AUTH_ROLES_MAPPING = {
                 "Viewer": ["Viewer"],
                 "Admin": ["Admin"],
+                "User": ["User"],
             }
 
             OAUTH_PROVIDERS = [{
@@ -266,11 +271,12 @@ locals {
             }]
             def map_roles(team_list):
                 team_role_map = {
+                    "modern-gitops-stack-viewer": AUTH_ROLE_VIEWER,
                     "modern-gitops-stack-admins": AUTH_ROLE_ADMIN,
                     "modern-gitops-stack-public": AUTH_ROLE_PUBLIC,
                     "modern-gitops-stack-user": AUTH_ROLE_USER,
                 }
-                return list(set(team_role_map.get(team, AUTH_ROLE_PUBLIC) for team in team_list))
+                return list(set(team_role_map.get(team, AUTH_ROLE_VIEWER) for team in team_list))
             class CustomSecurityManager(AirflowSecurityManager):
                 def get_oauth_user_info(self, provider, resp):
                     me = self.oauth_remotes[provider].get("openid-connect/userinfo")
