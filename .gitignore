@@ -35,6 +35,9 @@ override.tf.json
 terraform.rc
 
 tests
+
+kind-config
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

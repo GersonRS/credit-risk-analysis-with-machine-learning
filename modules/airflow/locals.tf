@@ -25,6 +25,11 @@ locals {
       envName : "conn_data"
       secretName : "airflow-airflow-connections"
       secretKey : "AIRFLOW_CONN_POSTEGRES_DATA"
+    },
+    {
+      envName : "conn_mlflow"
+      secretName : "airflow-airflow-connections"
+      secretKey : "AIRFLOW_CONN_MLFLOW"
     }
   ]
   helm_values = [{
@@ -33,7 +38,7 @@ locals {
       images = {
         airflow = {
           repository = "gersonrs/airflow"
-          tag        = "v1.0.5"
+          tag        = "v1.0.6"
         }
       }
       volumes = [
@@ -194,6 +199,13 @@ locals {
           value: "True"
         - name: AIRFLOW__CORE__ALLOWED_DESERIALIZATION_CLASSES
           value: airflow\.* astro\.*
+        - name: AIRFLOW__CORE__XCOM_BACKEND
+          value: astro.custom_backend.astro_custom_backend.AstroCustomXcomBackend
+        - name: AIRFLOW__ASTRO_SDK__XCOM_STORAGE_CONN_ID
+          value: conn_minio_s3
+        - name: AIRFLOW__ASTRO_SDK__XCOM_STORAGE_URL
+          value: s3://airflow/xcom/
+
       EOT
       extraConfigMaps = {
         airflow-airflow-connections = {
