@@ -38,7 +38,7 @@ locals {
       images = {
         airflow = {
           repository = "gersonrs/airflow"
-          tag        = "v1.0.6"
+          tag        = "v1.0.10"
         }
       }
       volumes = [
@@ -132,11 +132,11 @@ locals {
         },
         {
           name  = "MLFLOW_S3_ENDPOINT_URL"
-          value = "http://${var.storage.endpoint}:9000"
+          value = "http://${var.storage.endpoint}"
         },
         {
           name  = "AWS_ENDPOINT"
-          value = "http://${var.storage.endpoint}:9000"
+          value = "http://${var.storage.endpoint}"
         },
         {
           name  = "AWS_ACCESS_KEY_ID"
@@ -199,12 +199,7 @@ locals {
           value: "True"
         - name: AIRFLOW__CORE__ALLOWED_DESERIALIZATION_CLASSES
           value: airflow\.* astro\.*
-        - name: AIRFLOW__CORE__XCOM_BACKEND
-          value: astro.custom_backend.astro_custom_backend.AstroCustomXcomBackend
-        - name: AIRFLOW__ASTRO_SDK__XCOM_STORAGE_CONN_ID
-          value: conn_minio_s3
-        - name: AIRFLOW__ASTRO_SDK__XCOM_STORAGE_URL
-          value: s3://airflow/xcom/
+
 
       EOT
       extraConfigMaps = {

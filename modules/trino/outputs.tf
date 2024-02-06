@@ -5,14 +5,14 @@ output "id" {
 
 output "cluster_dns" {
   description = "trino cluster dns"
-  value       = "trino.${var.namespace}.svc.cluster.local:9000"
+  value       = "trino.${var.namespace}.svc.cluster.local"
 }
 output "cluster_ip" {
   description = "trino cluster ip internal"
-  value = data.kubernetes_service.trino.spec[0].cluster_ip
+  value       = data.kubernetes_service.trino.spec[0].cluster_ip
 }
 
 output "endpoint" {
   description = "trino endpoint external"
-  value = "https://trino.apps.${var.cluster_name}.${var.base_domain}"
+  value       = "https://trino.apps.${var.cluster_name}.${var.base_domain}"
 }
