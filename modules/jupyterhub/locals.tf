@@ -59,39 +59,88 @@ locals {
         }
         profileList = [
           {
-            display_name = "Minimal environment"
-            description  = "To avoid too much bells and whistles: Python."
-            default      = true
+            display_name = "DataScience",
+            slug         = "datascience",
+            description  = "CPU: 2 cores, RAM: 4Gi"
+            default      = true,
+            profile_options = {
+              image = {
+                display_name = "Image",
+                choices = {
+                  pytorch = {
+                    display_name = "Data Science",
+                    default      = true,
+                    kubespawner_override = {
+                      image = "quay.io/jupyter/datascience-notebook:latest"
+                    }
+                  },
+                  tf = {
+                    display_name = "Spark",
+                    kubespawner_override = {
+                      image = "quay.io/jupyter/all-spark-notebook:latest"
+                    }
+                  }
+                }
+              }
+            },
             kubespawner_override = {
-              cpu_limit = 1
-              mem_limit = "2G"
+              cpu_limit = 2,
+              mem_limit = "4G",
             }
           },
           {
-            display_name = "Datascience environment"
-            description  = "If you want the additional bells and whistles: Python, R, and Julia."
+            display_name = "DataEngineer",
+            slug         = "dataengineer",
+            profile_options = {
+              memory = {
+                display_name = "Memory",
+                choices = {
+                  "2Gi" = {
+                    display_name = "2GB",
+                    kubespawner_override = {
+                      mem_limit = "2G"
+                    }
+                  },
+                  "4Gi" = {
+                    display_name = "4G",
+                    kubespawner_override = {
+                      mem_limit = "4G"
+                    }
+                  }
+                }
+              },
+              cpu = {
+                display_name = "CPUs",
+                choices = {
+                  "2" = {
+                    display_name = "2 CPUs",
+                    kubespawner_override = {
+                      cpu_limit     = 2,
+                      cpu_guarantee = 1.8,
+                    }
+                  },
+                  "4" = {
+                    display_name = "4 CPUs",
+                    kubespawner_override = {
+                      cpu_limit     = 4,
+                      cpu_guarantee = 3.5,
+                    }
+                  }
+                }
+              },
+            },
             kubespawner_override = {
-              image     = "jupyter/datascience-notebook:2343e33dec46"
-              cpu_limit = 2
-              mem_limit = "4G"
+              image = "quay.io/jupyter/all-spark-notebook:latest",
             }
           },
           {
-            display_name = "Spark environment"
-            description  = "The Jupyter Stacks spark image!"
+            display_name = "DataScience - Medium instance",
+            slug         = "datascience-medium",
+            description  = "CPU: 1 core, RAM: 2Gi"
             kubespawner_override = {
-              image     = "jupyter/all-spark-notebook:2343e33dec46"
-              cpu_limit = 3
-              mem_limit = "6G"
-            }
-          },
-          {
-            display_name = "Learning Data Science"
-            description  = "Datascience Environment with Sample Notebooks"
-            kubespawner_override = {
-              image     = "jupyter/datascience-notebook:2343e33dec46"
-              cpu_limit = 2
-              mem_limit = "4G"
+              image     = "quay.io/jupyter/datascience-notebook:latest",
+              cpu_limit = 1,
+              mem_limit = "2G",
             }
           }
         ]

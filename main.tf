@@ -407,47 +407,8 @@ module "mlflow" {
 # #   }
 # # }
 
-# module "jupyterhub" {
-#   source                 = "./modules/jupyterhub"
-#   cluster_name           = local.cluster_name
-#   base_domain            = local.base_domain
-#   cluster_issuer         = local.cluster_issuer
-#   argocd_namespace       = module.argocd_bootstrap.argocd_namespace
-#   enable_service_monitor = local.enable_service_monitor
-#   target_revision        = local.target_revision
-#   oidc                   = module.oidc.oidc
-#   storage = {
-#     bucket_name       = "jupyterhub"
-#     endpoint          = module.minio.cluster_dns
-#     access_key        = module.minio.minio_root_user_credentials.username
-#     secret_access_key = module.minio.minio_root_user_credentials.password
-#   }
-#   database = {
-#     user     = module.postgresql.credentials.user
-#     password = module.postgresql.credentials.password
-#     database = "jupyterhub"
-#     endpoint = module.postgresql.cluster_dns
-#   }
-#   mlflow = {
-#     endpoint = module.mlflow.cluster_dns
-#   }
-#   # ray = {
-#   #   endpoint = module.ray.cluster_dns
-#   # }
-#   project_source_repo = local.project_source_repo
-#   dependency_ids = {
-#     argocd     = module.argocd_bootstrap.id
-#     traefik    = module.traefik.id
-#     oidc       = module.oidc.id
-#     minio      = module.minio.id
-#     postgresql = module.postgresql.id
-#     mlflow     = module.mlflow.id
-#     # ray        = module.ray.id
-#   }
-# }
-
-module "airflow" {
-  source                 = "./modules/airflow"
+module "jupyterhub" {
+  source                 = "./modules/jupyterhub"
   cluster_name           = local.cluster_name
   base_domain            = local.base_domain
   cluster_issuer         = local.cluster_issuer
@@ -455,9 +416,8 @@ module "airflow" {
   enable_service_monitor = local.enable_service_monitor
   target_revision        = local.target_revision
   oidc                   = module.oidc.oidc
-  fernetKey              = local.airflow_fernetKey
   storage = {
-    bucket_name       = "airflow"
+    bucket_name       = "jupyterhub"
     endpoint          = module.minio.cluster_dns
     access_key        = module.minio.minio_root_user_credentials.username
     secret_access_key = module.minio.minio_root_user_credentials.password
@@ -465,7 +425,7 @@ module "airflow" {
   database = {
     user     = module.postgresql.credentials.user
     password = module.postgresql.credentials.password
-    database = "airflow"
+    database = "jupyterhub"
     endpoint = module.postgresql.cluster_dns
   }
   mlflow = {
@@ -485,6 +445,46 @@ module "airflow" {
     # ray        = module.ray.id
   }
 }
+
+# module "airflow" {
+#   source                 = "./modules/airflow"
+#   cluster_name           = local.cluster_name
+#   base_domain            = local.base_domain
+#   cluster_issuer         = local.cluster_issuer
+#   argocd_namespace       = module.argocd_bootstrap.argocd_namespace
+#   enable_service_monitor = local.enable_service_monitor
+#   target_revision        = local.target_revision
+#   oidc                   = module.oidc.oidc
+#   fernetKey              = local.airflow_fernetKey
+#   storage = {
+#     bucket_name       = "airflow"
+#     endpoint          = module.minio.cluster_dns
+#     access_key        = module.minio.minio_root_user_credentials.username
+#     secret_access_key = module.minio.minio_root_user_credentials.password
+#   }
+#   database = {
+#     user     = module.postgresql.credentials.user
+#     password = module.postgresql.credentials.password
+#     database = "airflow"
+#     endpoint = module.postgresql.cluster_dns
+#   }
+#   mlflow = {
+#     endpoint = module.mlflow.cluster_dns
+#   }
+#   # ray = {
+#   #   endpoint = module.ray.cluster_dns
+#   # }
+#   project_source_repo = local.project_source_repo
+#   dependency_ids = {
+#     argocd     = module.argocd_bootstrap.id
+#     traefik    = module.traefik.id
+#     oidc       = module.oidc.id
+#     minio      = module.minio.id
+#     postgresql = module.postgresql.id
+#     mlflow     = module.mlflow.id
+#     # ray        = module.ray.id
+#   }
+# }
 
 # module "gitlab" {
 #   source                 = "./modules/gitlab"
@@ -544,7 +544,5 @@ module "argocd" {
     cert-manager          = module.cert-manager.id
     oidc                  = module.oidc.id
     kube-prometheus-stack = module.kube-prometheus-stack.id
-    airflow               = module.airflow.id
-    # jupyterhub            = module.jupyterhub.id
   }
 }
