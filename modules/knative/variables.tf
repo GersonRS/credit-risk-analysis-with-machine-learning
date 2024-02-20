@@ -3,7 +3,7 @@
 #######################
 
 variable "cluster_name" {
-  description = "Name given to the cluster. Value used for the ingress' URL of the application."
+  description = "Name given to the cluster. Value used for naming some the resources created by the module."
   type        = string
 }
 
@@ -16,6 +16,24 @@ variable "argocd_namespace" {
   description = "Namespace used by Argo CD where the Application and AppProject resources should be created."
   type        = string
   default     = "argocd"
+}
+
+variable "argocd_project" {
+  description = "Name of the Argo CD AppProject where the Application should be created. If not set, the Application will be created in a new AppProject only for this Application."
+  type        = string
+  default     = null
+}
+
+variable "argocd_labels" {
+  description = "Labels to attach to the Argo CD Application resource."
+  type        = map(string)
+  default     = {}
+}
+
+variable "destination_cluster" {
+  description = "Destination cluster where the application should be deployed."
+  type        = string
+  default     = "in-cluster"
 }
 
 variable "target_revision" {
@@ -33,7 +51,13 @@ variable "cluster_issuer" {
 variable "namespace" {
   description = "Namespace where the applications's Kubernetes resources should be created. Namespace will be created in case it doesn't exist."
   type        = string
-  default     = "knative"
+  default     = "mlops"
+}
+
+variable "enable_service_monitor" {
+  description = "Enable Prometheus ServiceMonitor in the Helm chart."
+  type        = bool
+  default     = true
 }
 
 variable "helm_values" {
