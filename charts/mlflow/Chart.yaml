@@ -3,6 +3,6 @@ name: mlflow
 description: A Helm chart for Mlflow open source platform for the machine learning lifecycle
 version: "0"
 dependencies:
-- name: mlflow
-  repository: https://community-charts.github.io/helm-charts/
-  version: 0.7.19
+  - name: mlflow
+    repository: https://community-charts.github.io/helm-charts/
+    version: "*.*.*"

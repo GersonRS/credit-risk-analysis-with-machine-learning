@@ -17,9 +17,9 @@ resource "kubernetes_secret" "postgresql_secret" {
     name      = "postgres-secrets"
     namespace = var.namespace
     annotations = {
-      "postgresql.v1.k8s.emberstack.com/reflection-auto-enabled" : "true"
-      "postgresql.v1.k8s.emberstack.com/reflection-allowed" : "true"
-      "postgresql.v1.k8s.emberstack.com/reflection-allowed-namespaces" : "${var.namespace},processing"
+      "postgresql.v1.k8s.emberstack.com/reflection-auto-enabled"       = "true"
+      "postgresql.v1.k8s.emberstack.com/reflection-allowed"            = "true"
+      "postgresql.v1.k8s.emberstack.com/reflection-allowed-namespaces" = "${var.namespace},processing"
     }
   }
 

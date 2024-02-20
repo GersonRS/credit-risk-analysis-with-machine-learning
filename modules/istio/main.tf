@@ -53,7 +53,7 @@ resource "argocd_application" "this" {
     delete = "15m"
   }
 
-  # wait = var.app_autosync == { "allow_empty" = tobool(null), "prune" = tobool(null), "self_heal" = tobool(null) } ? false : true
+  wait = var.app_autosync == { "allow_empty" = tobool(null), "prune" = tobool(null), "self_heal" = tobool(null) } ? false : true
 
   spec {
     project = var.argocd_project == null ? argocd_project.this[0].metadata.0.name : var.argocd_project
@@ -105,16 +105,5 @@ resource "argocd_application" "this" {
 resource "null_resource" "this" {
   depends_on = [
     resource.argocd_application.this,
-  ]
-}
-
-data "kubernetes_service" "istio" {
-  metadata {
-    name      = "istio"
-    namespace = var.namespace
-  }
-
-  depends_on = [
-    null_resource.this
   ]
 }

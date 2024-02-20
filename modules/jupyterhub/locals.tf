@@ -57,6 +57,44 @@ locals {
           AWS_S3_ALLOW_UNSAFE_RENAME = "true",
           RAY_ADDRESS                = var.ray != null ? "ray://${var.ray.endpoint}:10001" : null
         }
+        profileList = [
+          {
+            display_name = "Minimal environment"
+            description  = "To avoid too much bells and whistles: Python."
+            default      = true
+            kubespawner_override = {
+              cpu_limit = 1
+              mem_limit = "2G"
+            }
+          },
+          {
+            display_name = "Datascience environment"
+            description  = "If you want the additional bells and whistles: Python, R, and Julia."
+            kubespawner_override = {
+              image     = "jupyter/datascience-notebook:2343e33dec46"
+              cpu_limit = 2
+              mem_limit = "4G"
+            }
+          },
+          {
+            display_name = "Spark environment"
+            description  = "The Jupyter Stacks spark image!"
+            kubespawner_override = {
+              image     = "jupyter/all-spark-notebook:2343e33dec46"
+              cpu_limit = 3
+              mem_limit = "6G"
+            }
+          },
+          {
+            display_name = "Learning Data Science"
+            description  = "Datascience Environment with Sample Notebooks"
+            kubespawner_override = {
+              image     = "jupyter/datascience-notebook:2343e33dec46"
+              cpu_limit = 2
+              mem_limit = "4G"
+            }
+          }
+        ]
       }
       ingress = {
         enabled = true
@@ -74,6 +112,11 @@ locals {
           hosts      = ["jupyterhub.apps.${var.base_domain}", "jupyterhub.apps.${var.cluster_name}.${var.base_domain}"]
           secretName = "jupyterhub-ingres-tls"
         }]
+      }
+      cull = {
+        every   = 300
+        timeout = 1800
+        maxAge  = 43200
       }
     }
   }]

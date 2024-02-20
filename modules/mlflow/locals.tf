@@ -1,6 +1,9 @@
 locals {
   helm_values = [{
     mlflow = {
+      serviceMonitor = {
+        enabled = var.enable_service_monitor
+      }
       extraEnvVars = {
         MLFLOW_S3_ENDPOINT_URL = "http://${var.storage.endpoint}"
         MLFLOW_S3_IGNORE_TLS   = true

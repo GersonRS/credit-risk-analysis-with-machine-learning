@@ -7,6 +7,45 @@ resource "random_password" "minio_root_secretkey" {
   special = false
 }
 
+resource "kubernetes_service_account" "minio_storage" {
+  metadata {
+    name = "minio-storage"
+    annotations = {
+      "serving.kserve.io/s3-endpoint"          = "minio.${var.namespace}.svc.cluster.local:9000"
+      "serving.kserve.io/s3-usehttps"          = "1"
+      "serving.kserve.io/s3-region"            = "us-east-2"
+      "serving.kserve.io/s3-useanoncredential" = "false"
+      "serving.kserve.io/s3-verifyssl"         = "0"
+    }
+  }
+  secret {
+    name = kubernetes_secret.minio_credention_secret.metadata.0.name
+  }
+}
+
+resource "kubernetes_secret" "minio_credention_secret" {
+  metadata {
+    name      = "minio-credention-secret"
+    namespace = var.namespace
+    annotations = {
+      "serving.kserve.io/s3-endpoint"                                 = "minio.${var.namespace}.svc.cluster.local:9000"
+      "serving.kserve.io/s3-region"                                   = "us-east-2"
+      "serving.kserve.io/s3-useanoncredential"                        = "false"
+      "serving.kserve.io/s3-usehttps"                                 = "1"
+      "serving.kserve.io/s3-verifyssl"                                = "0"
+      "reflector.v1.k8s.emberstack.com/reflection-allowed"            = "true"
+      "reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces" = "${var.namespace},management"
+    }
+  }
+
+  data = {
+    AWS_ACCESS_KEY_ID     = "root"
+    AWS_SECRET_ACCESS_KEY = random_password.minio_root_secretkey.result
+  }
+
+  depends_on = [null_resource.this]
+}
+
 resource "argocd_project" "this" {
   count = var.argocd_project == null ? 1 : 0
 
