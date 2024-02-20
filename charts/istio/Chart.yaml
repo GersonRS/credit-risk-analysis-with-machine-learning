@@ -1,0 +1,5 @@
+apiVersion: v2
+description: |
+  This chart installs istio
+name: istio
+version: "0"
