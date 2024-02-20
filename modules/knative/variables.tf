@@ -33,7 +33,7 @@ variable "cluster_issuer" {
 variable "namespace" {
   description = "Namespace where the applications's Kubernetes resources should be created. Namespace will be created in case it doesn't exist."
   type        = string
-  default     = "keycloak"
+  default     = "knative"
 }
 
 variable "helm_values" {
@@ -65,19 +65,4 @@ variable "dependency_ids" {
 variable "project_source_repo" {
   description = "Repository allowed to be scraped in this AppProject."
   type        = string
-}
-
-#######################
-## Module variables
-#######################
-
-variable "database" {
-  description = "Keycloak external database server configuration."
-  type = object({
-    vendor   = string
-    host     = string
-    username = string
-    password = string
-  })
-  default = null
 }
