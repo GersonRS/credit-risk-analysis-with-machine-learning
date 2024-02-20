@@ -3,7 +3,7 @@ repos:
     rev: v2.3.0
     hooks:
       - id: check-yaml
-        exclude: ^(modules/|dockerfiles/)
+        exclude: ^(modules/|dockerfiles/|charts/)
       - id: pretty-format-json
         args: ["--autofix"]
         exclude: "Pipfile.lock"

@@ -1,0 +1,7 @@
+---
+apiVersion: "v2"
+name: "knative-eventing"
+version: "0"
+description: |
+  This chart installs knative-serving. It needs to be deployed after the chart that
+  deploys the Knative Operator.
