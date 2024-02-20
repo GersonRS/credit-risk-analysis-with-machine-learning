@@ -1,0 +1,6 @@
+---
+apiVersion: "v2"
+name: "knative-operator"
+version: "0"
+description: |
+  This chart installs the CRDs needed for knative as well as the knative operator.
