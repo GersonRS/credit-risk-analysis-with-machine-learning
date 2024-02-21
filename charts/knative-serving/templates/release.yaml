@@ -1,3 +1,4 @@
+
 ---
 # net-istio.yaml
 # Generated when HEAD was 718312ee11833645a6757760d0ecdb4d5651d906
@@ -52,6 +53,7 @@ apiVersion: networking.istio.io/v1beta1
 kind: Gateway
 metadata:
   name: knative-ingress-gateway
+  namespace: knative-serving
   labels:
     app.kubernetes.io/component: net-istio
     app.kubernetes.io/name: knative-serving
@@ -59,7 +61,7 @@ metadata:
     networking.knative.dev/ingress-provider: istio
 spec:
   selector:
-    istio: gateway
+    istio: ingressgateway
   servers:
     - port:
         number: 80
@@ -90,6 +92,7 @@ apiVersion: networking.istio.io/v1beta1
 kind: Gateway
 metadata:
   name: knative-local-gateway
+  namespace: knative-serving
   labels:
     app.kubernetes.io/component: net-istio
     app.kubernetes.io/name: knative-serving
@@ -97,7 +100,7 @@ metadata:
     networking.knative.dev/ingress-provider: istio
 spec:
   selector:
-    istio: gateway
+    istio: ingressgateway
   servers:
     - port:
         number: 8081
@@ -110,6 +113,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: knative-local-gateway
+  namespace: istio-system
   labels:
     app.kubernetes.io/component: net-istio
     app.kubernetes.io/name: knative-serving
@@ -119,7 +123,7 @@ metadata:
 spec:
   type: ClusterIP
   selector:
-    istio: gateway
+    istio: ingressgateway
   ports:
     - name: http2
       port: 80
@@ -144,6 +148,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: config-istio
+  namespace: knative-serving
   labels:
     app.kubernetes.io/component: net-istio
     app.kubernetes.io/name: knative-serving
@@ -172,7 +177,7 @@ data:
     # `gateway.{{gateway_namespace}}.{{gateway_name}}: "{{ingress_name}}.{{ingress_namespace}}.svc.cluster.local"`.
     # The {{gateway_namespace}} is optional; when it is omitted, the system will search for
     # the gateway in the serving system namespace `knative-serving`
-    gateway.knative-serving.knative-ingress-gateway: "istio-gateway.istio-system.svc.cluster.local"
+    gateway.knative-serving.knative-ingress-gateway: "istio-ingressgateway.istio-system.svc.cluster.local"
 
     # A cluster local gateway to allow pods outside of the mesh to access
     # Services and Routes not exposing through an ingress.  If the users
@@ -202,6 +207,7 @@ apiVersion: "security.istio.io/v1beta1"
 kind: "PeerAuthentication"
 metadata:
   name: "webhook"
+  namespace: "knative-serving"
   labels:
     app.kubernetes.io/component: net-istio
     app.kubernetes.io/name: knative-serving
@@ -219,6 +225,7 @@ apiVersion: "security.istio.io/v1beta1"
 kind: "PeerAuthentication"
 metadata:
   name: "domainmapping-webhook"
+  namespace: "knative-serving"
   labels:
     app.kubernetes.io/component: net-istio
     app.kubernetes.io/name: knative-serving
@@ -236,6 +243,7 @@ apiVersion: "security.istio.io/v1beta1"
 kind: "PeerAuthentication"
 metadata:
   name: "net-istio-webhook"
+  namespace: "knative-serving"
   labels:
     app.kubernetes.io/component: net-istio
     app.kubernetes.io/name: knative-serving
@@ -268,6 +276,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: net-istio-controller
+  namespace: knative-serving
   labels:
     app.kubernetes.io/component: net-istio
     app.kubernetes.io/name: knative-serving
@@ -371,6 +380,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: net-istio-webhook
+  namespace: knative-serving
   labels:
     app.kubernetes.io/component: net-istio
     app.kubernetes.io/name: knative-serving
@@ -477,6 +487,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: net-istio-webhook-certs
+  namespace: knative-serving
   labels:
     app.kubernetes.io/component: net-istio
     app.kubernetes.io/name: knative-serving
@@ -502,6 +513,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: net-istio-webhook
+  namespace: knative-serving
   labels:
     role: net-istio-webhook
     app.kubernetes.io/component: net-istio
@@ -554,12 +566,12 @@ webhooks:
     clientConfig:
       service:
         name: net-istio-webhook
-
+        namespace: knative-serving
     failurePolicy: Fail
     sideEffects: None
     objectSelector:
       matchExpressions:
-        - { key: "serving.knative.dev/configuration", operator: Exists }
+        - {key: "serving.knative.dev/configuration", operator: Exists}
     name: webhook.istio.networking.internal.knative.dev
 
 ---
@@ -593,7 +605,7 @@ webhooks:
     clientConfig:
       service:
         name: net-istio-webhook
-
+        namespace: knative-serving
     failurePolicy: Fail
     sideEffects: None
     name: config.webhook.istio.networking.internal.knative.dev
