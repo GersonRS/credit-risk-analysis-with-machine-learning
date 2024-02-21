@@ -38,12 +38,12 @@ data "utils_deep_merge_yaml" "values" {
   input = [for i in concat(local.helm_values, var.helm_values) : yamlencode(i)]
 }
 
-resource "argocd_application" "operator-crds" {
+resource "argocd_application" "serving-crds" {
   metadata {
-    name      = var.destination_cluster != "in-cluster" ? "knative-operator-crds-${var.destination_cluster}" : "knative-operator-crds"
+    name      = var.destination_cluster != "in-cluster" ? "knative-serving-crds-${var.destination_cluster}" : "knative-serving-crds"
     namespace = var.argocd_namespace
     labels = merge({
-      "application" = "knative-operator-crds"
+      "application" = "knative-serving-crds"
       "cluster"     = var.destination_cluster
     }, var.argocd_labels)
   }
@@ -60,7 +60,7 @@ resource "argocd_application" "operator-crds" {
 
     source {
       repo_url        = var.project_source_repo
-      path            = "charts/knative-operator1/crds"
+      path            = "charts/knative-serving/crds"
       target_revision = var.target_revision
     }
 
@@ -100,12 +100,12 @@ resource "argocd_application" "operator-crds" {
   ]
 }
 
-resource "argocd_application" "operator" {
+resource "argocd_application" "serving" {
   metadata {
-    name      = var.destination_cluster != "in-cluster" ? "knative-operator-${var.destination_cluster}" : "knative-operator"
+    name      = var.destination_cluster != "in-cluster" ? "knative-serving-${var.destination_cluster}" : "knative-serving"
     namespace = var.argocd_namespace
     labels = merge({
-      "application" = "knative-operator"
+      "application" = "knative-serving"
       "cluster"     = var.destination_cluster
     }, var.argocd_labels)
   }
@@ -122,7 +122,7 @@ resource "argocd_application" "operator" {
 
     source {
       repo_url        = var.project_source_repo
-      path            = "charts/knative-operator1"
+      path            = "charts/knative-serving"
       target_revision = var.target_revision
       helm {
         skip_crds = true
@@ -160,7 +160,7 @@ resource "argocd_application" "operator" {
   }
 
   depends_on = [
-    resource.argocd_application.operator-crds
+    resource.argocd_application.serving-crds
   ]
 }
 
@@ -224,12 +224,12 @@ resource "argocd_application" "operator" {
 #   }
 
 #   depends_on = [
-#     resource.argocd_application.operator,
+#     resource.argocd_application.serving,
 #   ]
 # }
 
 resource "null_resource" "this" {
   depends_on = [
-    resource.argocd_application.operator,
+    resource.argocd_application.serving,
   ]
 }

@@ -171,10 +171,10 @@ resource "argocd_application" "istiod" {
 }
 resource "argocd_application" "gateway" {
   metadata {
-    name      = var.destination_cluster != "in-cluster" ? "istio-gateway-${var.destination_cluster}" : "istio-gateway"
+    name      = var.destination_cluster != "in-cluster" ? "istio-ingressgateway-${var.destination_cluster}" : "istio-ingressgateway"
     namespace = var.argocd_namespace
     labels = merge({
-      "application" = "istio-gateway"
+      "application" = "istio-ingressgateway"
       "cluster"     = var.destination_cluster
     }, var.argocd_labels)
   }
