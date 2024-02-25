@@ -1,0 +1,7 @@
+apiVersion: v2
+dependencies:
+  - name: operator
+    repository: https://operator.min.io
+    version: "*.*.*"
+name: operator
+version: "0"

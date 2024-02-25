@@ -316,85 +316,84 @@ locals {
 
   }]
   helm_values_tenant = [{
+    secrets = {
+      name      = "minio-env-configuration"
+      accessKey = "minio"
+      secretKey = "${random_password.minio_root_secretkey.result}"
+    }
     tenant = {
-      secrets = {
-        name      = "minio-env-configuration"
-        accessKey = "minio"
-        secretKey = "${random_password.minio_root_secretkey.result}"
+      name = "minio"
+      configuration = {
+        name = "minio-env-configuration"
       }
-      tenant = {
-        name = "minio"
-        configuration = {
-          name = "minio-env-configuration"
+      pools = [{
+        servers          = 2
+        volumesPerServer = 2
+        size             = "10Gi"
+      }]
+      buckets = local.minio_config.buckets
+      users = [
+        {
+          CONSOLE_ACCESS_KEY = "airflow-user"
+          CONSOLE_SECRET_KEY = random_password.minio_root_secretkey.result
         }
-        pools = [{
-          servers          = 2
-          volumesPerServer = 2
-          size             = "10Gi"
+      ]
+      env = [
+        {
+          name  = "MINIO_IDENTITY_OPENID_CONFIG_URL"
+          value = "${var.oidc.issuer_url}/.well-known/openid-configuration"
+        },
+        {
+          name  = "MINIO_IDENTITY_OPENID_CLIENT_ID"
+          value = var.oidc.client_id
+        },
+        {
+          name  = "MINIO_IDENTITY_OPENID_CLIENT_SECRET"
+          value = var.oidc.client_secret
+        },
+        {
+          name  = "MINIO_IDENTITY_OPENID_CLAIM_NAME"
+          value = "policy"
+        },
+        {
+          name  = "MINIO_IDENTITY_OPENID_CLAIM_PREFIX"
+          value = ""
+        },
+        {
+          name  = "MINIO_IDENTITY_OPENID_SCOPES"
+          value = "openid,profile,email"
+        },
+        {
+          name  = "MINIO_IDENTITY_OPENID_REDIRECT_URI"
+          value = format("https://%s/oauth_callback", format("minio-tenant.apps.%s.%s", var.cluster_name, var.base_domain))
+        },
+        {
+          name  = "MINIO_IDENTITY_OPENID_COMMENT"
+          value = ""
+        },
+      ]
+    }
+    ingress = {
+      console = {
+        enabled = true
+        ingressClassName : "traefik"
+        annotations = {
+          "cert-manager.io/cluster-issuer"                   = "${var.cluster_issuer}"
+          "traefik.ingress.kubernetes.io/router.entrypoints" = "websecure"
+          "traefik.ingress.kubernetes.io/router.middlewares" = "traefik-withclustername@kubernetescrd"
+          "traefik.ingress.kubernetes.io/router.tls"         = "true"
+          "ingress.kubernetes.io/ssl-redirect"               = "true"
+          "kubernetes.io/ingress.allow-http"                 = "false"
+        }
+        tls = [{
+          secretName = "minio-tenant-tls"
+          hosts = [
+            format("minio-tenant.apps.%s.%s", var.cluster_name, var.base_domain),
+          ]
         }]
-        buckets = local.minio_config.buckets
-        users = [
-          {
-            CONSOLE_ACCESS_KEY = "airflow-user"
-            CONSOLE_SECRET_KEY = random_password.minio_root_secretkey.result
-          }
-        ]
-        env = [
-          {
-            name  = "MINIO_IDENTITY_OPENID_CONFIG_URL"
-            value = "${var.oidc.issuer_url}/.well-known/openid-configuration"
-          },
-          {
-            name  = "MINIO_IDENTITY_OPENID_CLIENT_ID"
-            value = var.oidc.client_id
-          },
-          {
-            name  = "MINIO_IDENTITY_OPENID_CLIENT_SECRET"
-            value = var.oidc.client_secret
-          },
-          {
-            name  = "MINIO_IDENTITY_OPENID_CLAIM_NAME"
-            value = "policy"
-          },
-          {
-            name  = "MINIO_IDENTITY_OPENID_CLAIM_PREFIX"
-            value = ""
-          },
-          {
-            name  = "MINIO_IDENTITY_OPENID_SCOPES"
-            value = "openid,profile,email"
-          },
-          {
-            name  = "MINIO_IDENTITY_OPENID_REDIRECT_URI"
-            value = format("https://%s/oauth_callback", format("minio-tenant.apps.%s.%s", var.cluster_name, var.base_domain))
-          },
-          {
-            name  = "MINIO_IDENTITY_OPENID_COMMENT"
-            value = ""
-          },
-        ]
-      }
-      ingress = {
-        console = {
-          enabled = true
-          ingressClassName : "traefik"
-          annotations = {
-            "cert-manager.io/cluster-issuer"                   = "${var.cluster_issuer}"
-            "traefik.ingress.kubernetes.io/router.entrypoints" = "websecure"
-            "traefik.ingress.kubernetes.io/router.middlewares" = "traefik-withclustername@kubernetescrd"
-            "traefik.ingress.kubernetes.io/router.tls"         = "true"
-            "ingress.kubernetes.io/ssl-redirect"               = "true"
-            "kubernetes.io/ingress.allow-http"                 = "false"
-          }
-          tls = [{
-            secretName = "minio-tenant-tls"
-            hosts = [
-              format("minio-tenant.apps.%s.%s", var.cluster_name, var.base_domain),
-            ]
-          }]
-          host = format("minio-tenant.apps.%s.%s", var.cluster_name, var.base_domain)
-        }
+        host = format("minio-tenant.apps.%s.%s", var.cluster_name, var.base_domain)
       }
     }
+
   }]
 }
