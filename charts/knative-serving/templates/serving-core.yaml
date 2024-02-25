@@ -1,3 +1,26 @@
+# Copyright 2018 The Knative Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: knative-serving
+  labels:
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/version: "1.10.1"
+
+---
 # Copyright 2019 The Knative Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -262,6 +285,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: controller
+  namespace: knative-serving
   labels:
     app.kubernetes.io/component: controller
     app.kubernetes.io/name: knative-serving
@@ -290,7 +314,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: controller
-
+    namespace: knative-serving
 roleRef:
   kind: ClusterRole
   name: knative-serving-admin
@@ -307,7 +331,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: controller
-
+    namespace: knative-serving
 roleRef:
   kind: ClusterRole
   name: knative-serving-aggregated-addressable-resolver
@@ -4594,6 +4618,7 @@ metadata:
   # Do not drop -ctrl-ca suffix as control-protocol requires it.
   # https://github.com/knative-sandbox/control-protocol/blob/main/pkg/certificates/reconciler/controller.go
   name: serving-certs-ctrl-ca
+  namespace: knative-serving
   labels:
     serving-certs-ctrl: "data-plane"
     networking.internal.knative.dev/certificate-uid: "serving-certs"
@@ -4604,6 +4629,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: knative-serving-certs
+  namespace: knative-serving
   labels:
     serving-certs-ctrl: "data-plane"
     networking.internal.knative.dev/certificate-uid: "serving-certs"
@@ -4614,6 +4640,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: control-serving-certs
+  namespace: knative-serving
   labels:
     serving-certs-ctrl: "control-plane"
     networking.internal.knative.dev/certificate-uid: "serving-certs"
@@ -4624,6 +4651,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: routing-serving-certs
+  namespace: knative-serving
   labels:
     serving-certs-ctrl: "data-plane-routing"
     routing-id: "0"
@@ -4649,6 +4677,7 @@ apiVersion: caching.internal.knative.dev/v1alpha1
 kind: Image
 metadata:
   name: queue-proxy
+  namespace: knative-serving
   labels:
     app.kubernetes.io/component: queue-proxy
     app.kubernetes.io/name: knative-serving
@@ -4677,6 +4706,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: config-autoscaler
+  namespace: knative-serving
   labels:
     app.kubernetes.io/component: autoscaler
     app.kubernetes.io/name: knative-serving
@@ -4887,6 +4917,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: config-defaults
+  namespace: knative-serving
   labels:
     app.kubernetes.io/name: knative-serving
     app.kubernetes.io/component: controller
@@ -5041,6 +5072,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: config-deployment
+  namespace: knative-serving
   labels:
     app.kubernetes.io/name: knative-serving
     app.kubernetes.io/component: controller
@@ -5132,6 +5164,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: config-domain
+  namespace: knative-serving
   labels:
     app.kubernetes.io/name: knative-serving
     app.kubernetes.io/component: controller
@@ -5196,6 +5229,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: config-features
+  namespace: knative-serving
   labels:
     app.kubernetes.io/name: knative-serving
     app.kubernetes.io/component: controller
@@ -5400,6 +5434,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: config-gc
+  namespace: knative-serving
   labels:
     app.kubernetes.io/name: knative-serving
     app.kubernetes.io/component: controller
@@ -5499,6 +5534,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: config-leader-election
+  namespace: knative-serving
   labels:
     app.kubernetes.io/name: knative-serving
     app.kubernetes.io/component: controller
@@ -5560,6 +5596,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: config-logging
+  namespace: knative-serving
   labels:
     app.kubernetes.io/version: "1.10.1"
     app.kubernetes.io/component: logging
@@ -5639,6 +5676,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: config-network
+  namespace: knative-serving
   labels:
     app.kubernetes.io/name: knative-serving
     app.kubernetes.io/component: networking
@@ -5824,6 +5862,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: config-observability
+  namespace: knative-serving
   labels:
     app.kubernetes.io/name: knative-serving
     app.kubernetes.io/component: observability
@@ -5932,6 +5971,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: config-tracing
+  namespace: knative-serving
   labels:
     app.kubernetes.io/name: knative-serving
     app.kubernetes.io/component: tracing
@@ -5988,6 +6028,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: activator
+  namespace: knative-serving
   labels:
     app.kubernetes.io/component: activator
     app.kubernetes.io/name: knative-serving
@@ -6015,6 +6056,7 @@ apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
   name: activator-pdb
+  namespace: knative-serving
   labels:
     app.kubernetes.io/component: activator
     app.kubernetes.io/name: knative-serving
@@ -6044,6 +6086,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: activator
+  namespace: knative-serving
   labels:
     app.kubernetes.io/component: activator
     app.kubernetes.io/version: "1.10.1"
@@ -6150,6 +6193,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: activator-service
+  namespace: knative-serving
   labels:
     app: activator
     app.kubernetes.io/component: activator
@@ -6196,6 +6240,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: autoscaler
+  namespace: knative-serving
   labels:
     app.kubernetes.io/component: autoscaler
     app.kubernetes.io/name: knative-serving
@@ -6301,6 +6346,7 @@ metadata:
     app.kubernetes.io/name: knative-serving
     app.kubernetes.io/version: "1.10.1"
   name: autoscaler
+  namespace: knative-serving
 spec:
   ports:
     # Define metrics and profiling for them to be accessible within service meshes.
@@ -6335,6 +6381,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: controller
+  namespace: knative-serving
   labels:
     app.kubernetes.io/component: controller
     app.kubernetes.io/name: knative-serving
@@ -6432,6 +6479,7 @@ metadata:
     app.kubernetes.io/name: knative-serving
     app.kubernetes.io/version: "1.10.1"
   name: controller
+  namespace: knative-serving
 spec:
   ports:
     # Define metrics and profiling for them to be accessible within service meshes.
@@ -6463,6 +6511,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: domain-mapping
+  namespace: knative-serving
   labels:
     app.kubernetes.io/component: domain-mapping
     app.kubernetes.io/name: knative-serving
@@ -6566,6 +6615,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: domainmapping-webhook
+  namespace: knative-serving
   labels:
     app.kubernetes.io/component: domain-mapping
     app.kubernetes.io/name: knative-serving
@@ -6674,6 +6724,7 @@ metadata:
     app.kubernetes.io/name: knative-serving
     app.kubernetes.io/version: "1.10.1"
   name: domainmapping-webhook
+  namespace: knative-serving
 spec:
   ports:
     # Define metrics and profiling for them to be accessible within service meshes.
@@ -6709,6 +6760,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: webhook
+  namespace: knative-serving
   labels:
     app.kubernetes.io/component: webhook
     app.kubernetes.io/name: knative-serving
@@ -6734,6 +6786,7 @@ apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
   name: webhook-pdb
+  namespace: knative-serving
   labels:
     app.kubernetes.io/component: webhook
     app.kubernetes.io/name: knative-serving
@@ -6763,6 +6816,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: webhook
+  namespace: knative-serving
   labels:
     app.kubernetes.io/component: webhook
     app.kubernetes.io/version: "1.10.1"
@@ -6873,6 +6927,7 @@ metadata:
     app.kubernetes.io/version: "1.10.1"
     app.kubernetes.io/name: knative-serving
   name: webhook
+  namespace: knative-serving
 spec:
   ports:
     # Define metrics and profiling for them to be accessible within service meshes.
@@ -6917,7 +6972,7 @@ webhooks:
     clientConfig:
       service:
         name: webhook
-
+        namespace: knative-serving
     failurePolicy: Fail
     sideEffects: None
     name: config.webhook.serving.knative.dev
@@ -6967,7 +7022,7 @@ webhooks:
     clientConfig:
       service:
         name: webhook
-
+        namespace: knative-serving
     failurePolicy: Fail
     sideEffects: None
     name: webhook.serving.knative.dev
@@ -7022,7 +7077,7 @@ webhooks:
     clientConfig:
       service:
         name: domainmapping-webhook
-
+        namespace: knative-serving
     failurePolicy: Fail
     sideEffects: None
     name: webhook.domainmapping.serving.knative.dev
@@ -7059,6 +7114,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: domainmapping-webhook-certs
+  namespace: knative-serving
   labels:
     app.kubernetes.io/component: domain-mapping
     app.kubernetes.io/name: knative-serving
@@ -7093,7 +7149,7 @@ webhooks:
     clientConfig:
       service:
         name: domainmapping-webhook
-
+        namespace: knative-serving
     failurePolicy: Fail
     sideEffects: None
     name: validation.webhook.domainmapping.serving.knative.dev
@@ -7140,7 +7196,7 @@ webhooks:
     clientConfig:
       service:
         name: webhook
-
+        namespace: knative-serving
     failurePolicy: Fail
     sideEffects: None
     name: validation.webhook.serving.knative.dev
@@ -7187,6 +7243,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: webhook-certs
+  namespace: knative-serving
   labels:
     app.kubernetes.io/component: webhook
     app.kubernetes.io/name: knative-serving

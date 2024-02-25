@@ -156,6 +156,7 @@ resource "argocd_application" "serving" {
       }
 
       sync_options = [
+        "CreateNamespace=true",
         "ServerSideApply=true",
         "Replace=true",
         "RespectIgnoreDifferences=true"
