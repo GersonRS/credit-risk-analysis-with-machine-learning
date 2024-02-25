@@ -47,9 +47,12 @@ locals {
   helm_values = [{
     minio = merge(
       {
-        mode = "standalone" # Set the deployment mode of MinIO to standalone
+        # mode = "standalone" # Set the deployment mode of MinIO to standalone
+        drivesPerNode : 2
+        replicas : 1
+        pools : 2
         persistence = {
-          size : "20Gi"
+          size : "10Gi"
         }
         resources = {
           requests = {
