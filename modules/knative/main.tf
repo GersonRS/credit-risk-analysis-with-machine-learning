@@ -89,7 +89,6 @@ resource "argocd_application" "serving-crds" {
       }
 
       sync_options = [
-        "CreateNamespace=true",
         "Replace=true"
       ]
     }
@@ -143,7 +142,7 @@ resource "argocd_application" "serving" {
         content {
           prune       = automated.value.prune
           self_heal   = automated.value.self_heal
-          allow_empty = automated.value.allow_empty
+          allow_empty = true
         }
       }
 
@@ -157,7 +156,9 @@ resource "argocd_application" "serving" {
       }
 
       sync_options = [
-        "CreateNamespace=true"
+        "ServerSideApply=true",
+        "Replace=true",
+        "RespectIgnoreDifferences=true"
       ]
     }
   }
