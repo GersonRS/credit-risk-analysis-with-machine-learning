@@ -1,0 +1,8 @@
+apiVersion: v2
+description: This chart installs minio-operator.
+name: minio-operator
+version: "0"
+dependencies:
+  - name: minio-operator
+    repository: https://operator.min.io/
+    version: "*.*.*"

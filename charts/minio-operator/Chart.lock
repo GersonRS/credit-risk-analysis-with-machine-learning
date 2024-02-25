@@ -1,0 +1,6 @@
+dependencies:
+- name: minio-operator
+  repository: https://operator.min.io/
+  version: 4.3.7
+digest: sha256:f94431ff6d8632ca0af3138c7da7e8acb66bd23850d84a287986b9aba2a09b9c
+generated: "2024-02-24T14:47:12.653408001-03:00"
