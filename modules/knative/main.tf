@@ -122,10 +122,13 @@ resource "argocd_application" "serving" {
 
     source {
       repo_url        = var.project_source_repo
-      path            = "charts/knative-serving"
+      path            = "charts/knative-serving/templates"
       target_revision = var.target_revision
-      helm {
-        skip_crds = true
+      # helm {
+      #   skip_crds = true
+      # }
+      directory {
+        recurse = true
       }
     }
 
