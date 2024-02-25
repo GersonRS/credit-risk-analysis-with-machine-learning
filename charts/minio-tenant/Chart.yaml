@@ -1,8 +1,17 @@
 apiVersion: v2
-description: This chart installs tenant.
+description: A Helm chart for MinIO Operator
 name: tenant
-version: "0"
-dependencies:
-  - name: tenant
-    repository: https://operator.min.io/
-    version: "*.*.*"
+version: 5.0.12
+appVersion: v5.0.12
+keywords:
+  - storage
+  - object-storage
+  - S3
+home: https://min.io
+icon: https://min.io/resources/img/logo/MINIO_wordmark.png
+sources:
+  - https://github.com/minio/operator
+maintainers:
+  - name: MinIO, Inc
+    email: dev@minio.io
+type: application
