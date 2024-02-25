@@ -16,10 +16,10 @@ output "cluster_dns" {
   description = "MinIO cluster dns endpoint where the buckets are available."
   value       = "minio.${var.namespace}.svc.cluster.local:9000"
 }
-# output "cluster_ip" {
-#   description = "MinIO cluster ip internal"
-#   value       = data.kubernetes_service.minio.spec[0].cluster_ip
-# }
+output "cluster_ip" {
+  description = "MinIO cluster ip internal"
+  value       = data.kubernetes_service.minio.spec[0].cluster_ip
+}
 
 output "endpoint" {
   description = "MinIO endpoint external"
