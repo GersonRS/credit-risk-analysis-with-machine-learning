@@ -1,0 +1,6 @@
+dependencies:
+- name: kserve
+  repository: https://community-charts.github.io/helm-charts
+  version: 1.0.1
+digest: sha256:07e18114db779673754e82632cc0327a5ba2b843436435f8ce6cd5aba3a305fc
+generated: "2024-03-04T10:42:34.582912296-03:00"
