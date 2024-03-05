@@ -8,7 +8,7 @@ metadata:
   {{- end }}
 spec:
   selector:
-    istio: istio-ingressgateway
+    istio: ingressgateway
   servers:
   - hosts:
     - {{ .Values.keycloak.gateway.host }}
