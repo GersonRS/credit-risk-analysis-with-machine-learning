@@ -23,6 +23,11 @@ resource "argocd_project" "this" {
       namespace = var.namespace
     }
 
+    destination {
+      name      = var.destination_cluster
+      namespace = "istio-system"
+    }
+
     orphaned_resources {
       warn = true
     }
@@ -123,12 +128,36 @@ resource "argocd_application" "this" {
       repo_url        = var.project_source_repo
       path            = "charts/knative-serving/templates"
       target_revision = var.target_revision
-      # helm {
-      #   skip_crds = true
-      # }
       directory {
         recurse = true
       }
+    }
+
+    ignore_difference {
+      group         = "admissionregistration.k8s.io"
+      kind          = "MutatingWebhookConfiguration"
+      name          = "webhook.domainmapping.serving.knative.dev"
+      json_pointers = ["/webhooks/0/rules"]
+    }
+
+    ignore_difference {
+      group         = "admissionregistration.k8s.io"
+      kind          = "MutatingWebhookConfiguration"
+      name          = "webhook.serving.knative.dev"
+      json_pointers = ["/webhooks/0/rules"]
+    }
+
+    ignore_difference {
+      group         = "admissionregistration.k8s.io"
+      kind          = "ValidatingWebhookConfiguration"
+      name          = "validation.webhook.domainmapping.serving.knative.dev"
+      json_pointers = ["/webhooks/0/rules"]
+    }
+    ignore_difference {
+      group         = "admissionregistration.k8s.io"
+      kind          = "ValidatingWebhookConfiguration"
+      name          = "validation.webhook.serving.knative.dev"
+      json_pointers = ["/webhooks/0/rules"]
     }
 
     destination {
@@ -155,12 +184,16 @@ resource "argocd_application" "this" {
         limit = "5"
       }
 
-      # sync_options = [
-      #   "CreateNamespace=true",
-      #   "ServerSideApply=true",
-      #   "Replace=true",
-      #   "RespectIgnoreDifferences=true"
-      # ]
+      sync_options = [
+        "CreateNamespace=true",
+      ]
+
+      managed_namespace_metadata {
+        labels = {
+          "app.kubernetes.io/name"    = "knative-serving"
+          "app.kubernetes.io/version" = "1.10.1"
+        }
+      }
     }
   }
 
