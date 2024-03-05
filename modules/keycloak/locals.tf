@@ -17,7 +17,8 @@ locals {
         host     = "keycloak-postgres-db"
       }
       ingress = {
-        enabled = true
+        enabled          = false
+        ingressClassName = "istio"
         annotations = {
           "cert-manager.io/cluster-issuer"     = "${var.cluster_issuer}"
           "ingress.kubernetes.io/ssl-redirect" = "true"
@@ -44,6 +45,10 @@ locals {
             "keycloak.apps.${var.cluster_name}.${var.base_domain}"
           ]
         }]
+      }
+      gateway = {
+        annotations = {}
+        host        = "keycloak.apps.${var.cluster_name}.${var.base_domain}"
       }
     }
   }]

@@ -1,0 +1,13 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: keycloak-virtualservice
+spec:
+  hosts:
+    - { { .Values.keycloak.gateway.host } }
+  gateways:
+    - keycloak-gateway
+  http:
+    - route:
+        - destination:
+            host: keycloak
