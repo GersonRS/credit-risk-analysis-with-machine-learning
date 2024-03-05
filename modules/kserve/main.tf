@@ -64,11 +64,53 @@ resource "argocd_application" "this" {
 
     source {
       repo_url        = var.project_source_repo
-      path            = "charts/kserve"
+      path            = "charts/kserve/templates"
       target_revision = var.target_revision
-      helm {
-        values = data.utils_deep_merge_yaml.values.output
+      directory {
+        recurse = true
       }
+    }
+
+    ignore_difference {
+      group         = "admissionregistration.k8s.io"
+      kind          = "MutatingWebhookConfiguration"
+      name          = "inferenceservice.serving.kserve.io"
+      json_pointers = ["/webhooks"]
+    }
+
+    ignore_difference {
+      group         = "admissionregistration.k8s.io"
+      kind          = "ValidatingWebhookConfiguration"
+      name          = "clusterservingruntime.serving.kserve.io"
+      json_pointers = ["/webhooks/0/clientConfig/caBundle"]
+    }
+
+    ignore_difference {
+      group         = "admissionregistration.k8s.io"
+      kind          = "ValidatingWebhookConfiguration"
+      name          = "inferencegraph.serving.kserve.io"
+      json_pointers = ["/webhooks/0/clientConfig/caBundle"]
+    }
+
+    ignore_difference {
+      group         = "admissionregistration.k8s.io"
+      kind          = "ValidatingWebhookConfiguration"
+      name          = "inferenceservice.serving.kserve.io"
+      json_pointers = ["/webhooks/0/clientConfig/caBundle"]
+    }
+
+    ignore_difference {
+      group         = "admissionregistration.k8s.io"
+      kind          = "ValidatingWebhookConfiguration"
+      name          = "servingruntime.serving.kserve.io"
+      json_pointers = ["/webhooks/0/clientConfig/caBundle"]
+    }
+
+    ignore_difference {
+      group         = "admissionregistration.k8s.io"
+      kind          = "ValidatingWebhookConfiguration"
+      name          = "trainedmodel.serving.kserve.io"
+      json_pointers = ["/webhooks/0/clientConfig/caBundle"]
     }
 
     destination {

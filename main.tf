@@ -51,17 +51,18 @@ module "knative" {
   }
 }
 
-# module "kserve" {
-#   source              = "./modules/kserve"
-#   cluster_name        = local.cluster_name
-#   argocd_namespace    = module.argocd_bootstrap.argocd_namespace
-#   target_revision     = local.target_revision
-#   project_source_repo = local.project_source_repo
-#   dependency_ids = {
-#     istio        = module.istio.id
-#     cert-manager = module.cert-manager.id
-#   }
-# }
+module "kserve" {
+  source              = "./modules/kserve"
+  cluster_name        = local.cluster_name
+  argocd_namespace    = module.argocd_bootstrap.argocd_namespace
+  target_revision     = local.target_revision
+  project_source_repo = local.project_source_repo
+  dependency_ids = {
+    istio        = module.istio.id
+    cert-manager = module.cert-manager.id
+    knative      = module.knative.id
+  }
+}
 
 # module "keycloak" {
 #   source              = "./modules/keycloak"
