@@ -11,7 +11,7 @@ spec:
     istio: ingressgateway
   servers:
   - hosts:
-    - '*.172-18-0-100.nip.io'
+    - '*.apps.kind.172-18-0-100.nip.io'
     port:
       name: http
       number: 80
@@ -19,7 +19,7 @@ spec:
     tls:
       httpsRedirect: true
   - hosts:
-    - '*.172-18-0-100.nip.io'
+    - '*.apps.kind.172-18-0-100.nip.io'
     port:
       name: https
       number: 443
