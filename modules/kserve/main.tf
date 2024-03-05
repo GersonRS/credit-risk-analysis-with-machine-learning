@@ -101,7 +101,9 @@ resource "argocd_application" "this" {
 
       managed_namespace_metadata {
         labels = {
-          "istio-injection" = "enabled"
+          "control-plane"           = "kserve-controller-manager"
+          "controller-tools.k8s.io" = "1.0"
+          "istio-injection"         = "disabled"
         }
       }
     }
