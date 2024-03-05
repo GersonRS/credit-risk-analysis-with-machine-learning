@@ -22,6 +22,10 @@ resource "argocd_project" "this" {
       name      = var.destination_cluster
       namespace = var.namespace
     }
+    destination {
+      name      = var.destination_cluster
+      namespace = "kube-system"
+    }
 
     orphaned_resources {
       warn = true
@@ -65,9 +69,6 @@ resource "argocd_application" "this" {
       helm {
         values = data.utils_deep_merge_yaml.values.output
       }
-      directory {
-        recurse = true
-      }
     }
 
     destination {
@@ -95,11 +96,14 @@ resource "argocd_application" "this" {
       }
 
       sync_options = [
-        "CreateNamespace=true",
-        "ServerSideApply=true",
-        "Replace=true",
-        "RespectIgnoreDifferences=true"
+        "CreateNamespace=true"
       ]
+
+      managed_namespace_metadata {
+        labels = {
+          "istio-injection" = "enabled"
+        }
+      }
     }
   }
 

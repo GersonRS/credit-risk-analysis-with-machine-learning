@@ -67,6 +67,13 @@ resource "argocd_application" "base" {
       }
     }
 
+    ignore_difference {
+      group         = "admissionregistration.k8s.io"
+      kind          = "ValidatingWebhookConfiguration"
+      name          = "istiod-default-validator"
+      json_pointers = ["/webhooks/0/failurePolicy"]
+    }
+
     destination {
       name      = var.destination_cluster
       namespace = var.namespace
@@ -93,11 +100,13 @@ resource "argocd_application" "base" {
 
       sync_options = [
         "CreateNamespace=true",
-        "ServerSideApply=true",
-        "Replace=true",
-        "ApplyOutOfSyncOnly=true",
-        "RespectIgnoreDifferences=true"
       ]
+
+      # managed_namespace_metadata {
+      #   labels = {
+      #     "istio-injection" = "disabled"
+      #   }
+      # }
     }
   }
 
@@ -158,10 +167,6 @@ resource "argocd_application" "istiod" {
         }
         limit = "5"
       }
-
-      sync_options = [
-        "CreateNamespace=true"
-      ]
     }
   }
 
@@ -169,6 +174,7 @@ resource "argocd_application" "istiod" {
     resource.argocd_application.base
   ]
 }
+
 resource "argocd_application" "gateway" {
   metadata {
     name      = var.destination_cluster != "in-cluster" ? "istio-ingressgateway-${var.destination_cluster}" : "istio-ingressgateway"
@@ -221,10 +227,6 @@ resource "argocd_application" "gateway" {
         }
         limit = "5"
       }
-
-      sync_options = [
-        "CreateNamespace=true"
-      ]
     }
   }
 
@@ -234,6 +236,17 @@ resource "argocd_application" "gateway" {
 }
 
 resource "null_resource" "this" {
+  depends_on = [
+    resource.argocd_application.gateway,
+  ]
+}
+
+data "kubernetes_service" "istio" {
+  metadata {
+    name      = "istio-ingressgateway"
+    namespace = var.namespace
+  }
+
   depends_on = [
     resource.argocd_application.gateway,
   ]

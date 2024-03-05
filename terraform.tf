@@ -51,11 +51,11 @@ provider "argocd" {
   }
 }
 
-provider "keycloak" {
-  client_id                = "admin-cli"
-  username                 = module.keycloak.admin_credentials.username
-  password                 = module.keycloak.admin_credentials.password
-  url                      = "https://keycloak.apps.${local.cluster_name}.${local.base_domain}"
-  tls_insecure_skip_verify = true
-  initial_login            = false
-}
+# provider "keycloak" {
+#   client_id                = "admin-cli"
+#   username                 = module.keycloak.admin_credentials.username
+#   password                 = module.keycloak.admin_credentials.password
+#   url                      = "https://keycloak.apps.${local.cluster_name}.${local.base_domain}"
+#   tls_insecure_skip_verify = true
+#   initial_login            = false
+# }
