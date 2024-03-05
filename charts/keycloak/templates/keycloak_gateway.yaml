@@ -11,7 +11,7 @@ spec:
     istio: istio-ingressgateway
   servers:
   - hosts:
-    -  {{ .Values.keycloak.gateway.host }}
+    - {{ .Values.keycloak.gateway.host }}
     port:
       name: http
       number: 80
@@ -19,7 +19,7 @@ spec:
     tls:
       httpsRedirect: true
   - hosts:
-    -  {{ .Values.keycloak.gateway.host }}
+    - {{ .Values.keycloak.gateway.host }}
     port:
       name: https
       number: 443
