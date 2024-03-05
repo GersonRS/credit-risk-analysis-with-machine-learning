@@ -1,7 +1,7 @@
 # Local .terraform directories
 **/.terraform/*
 **/kind-config
-
+istio-1.10.3/
 # .tfstate files
 *.tfstate
 *.tfstate.*

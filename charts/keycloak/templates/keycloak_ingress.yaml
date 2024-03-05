@@ -9,6 +9,7 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
+  ingressClassName: {{ .Values.keycloak.ingress.ingressClassName }}
   rules:
     {{- range .Values.keycloak.ingress.hosts }}
     - host: {{ .host | quote }}
