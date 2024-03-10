@@ -137,6 +137,12 @@ resource "argocd_application" "this" {
         # Set to false because namespace is created by resource.kubernetes_namespace.kube_prometheus_stack_namespace
         "CreateNamespace=false"
       ]
+
+      managed_namespace_metadata {
+        labels = {
+          "istio-injection" = "enabled"
+        }
+      }
     }
   }
 

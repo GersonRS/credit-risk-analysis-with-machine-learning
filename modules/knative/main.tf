@@ -92,10 +92,6 @@ resource "argocd_application" "serving_crds" {
         }
         limit = "0"
       }
-
-      # sync_options = [
-      #   "Replace=true"
-      # ]
     }
   }
 
@@ -214,7 +210,7 @@ resource "kubernetes_config_map_v1_data" "patch" {
     namespace = var.namespace
   }
   data = {
-    "example.com2" = ""
+    "${var.base_domain}" = ""
   }
   depends_on = [
     resource.argocd_application.this,

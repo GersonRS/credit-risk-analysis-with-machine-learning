@@ -64,7 +64,8 @@ resource "argocd_application" "this" {
       path            = "charts/cert-manager"
       target_revision = var.target_revision
       helm {
-        values = data.utils_deep_merge_yaml.values.output
+        release_name = "cert-manager"
+        values       = data.utils_deep_merge_yaml.values.output
       }
     }
 

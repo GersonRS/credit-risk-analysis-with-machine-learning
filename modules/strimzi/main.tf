@@ -95,6 +95,12 @@ resource "argocd_application" "operator" {
       sync_options = [
         "CreateNamespace=true"
       ]
+
+      managed_namespace_metadata {
+        labels = {
+          "istio-injection" = "enabled"
+        }
+      }
     }
   }
 
