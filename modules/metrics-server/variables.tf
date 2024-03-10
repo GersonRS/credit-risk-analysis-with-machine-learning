@@ -63,6 +63,7 @@ variable "project_source_repo" {
   type        = string
 }
 
+
 variable "namespace" {
   description = "Namespace where the applications's Kubernetes resources should be created. Namespace will be created in case it doesn't exist."
   type        = string

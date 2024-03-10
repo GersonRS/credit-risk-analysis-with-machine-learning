@@ -17,6 +17,7 @@ module "argocd_bootstrap" {
 module "metrics-server" {
   source               = "./modules/metrics-server"
   argocd_project       = local.cluster_name
+  argocd_namespace     = module.argocd_bootstrap.argocd_namespace
   kubelet_insecure_tls = true
   target_revision      = local.target_revision
   project_source_repo  = local.project_source_repo
