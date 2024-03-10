@@ -14,6 +14,19 @@ module "argocd_bootstrap" {
   depends_on = [module.kind]
 }
 
+module "traefik" {
+  source                 = "./modules/traefik/kind"
+  cluster_name           = local.cluster_name
+  base_domain            = "172-18-0-100.nip.io"
+  argocd_namespace       = module.argocd_bootstrap.argocd_namespace
+  enable_service_monitor = local.enable_service_monitor
+  target_revision        = local.target_revision
+  project_source_repo    = local.project_source_repo
+  dependency_ids = {
+    argocd = module.argocd_bootstrap.id
+  }
+}
+
 module "istio" {
   source                 = "./modules/istio"
   cluster_name           = local.cluster_name
