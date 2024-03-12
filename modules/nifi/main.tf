@@ -6,7 +6,7 @@ resource "argocd_project" "this" {
   count = var.argocd_project == null ? 1 : 0
 
   metadata {
-    name      = var.destination_cluster != "in-cluster" ? "minio-${var.destination_cluster}" : "minio"
+    name      = var.destination_cluster != "in-cluster" ? "nifi-${var.destination_cluster}" : "nifi"
     namespace = var.argocd_namespace
     annotations = {
       "modern-gitops-stack.io/argocd_namespace" = var.argocd_namespace
@@ -14,7 +14,7 @@ resource "argocd_project" "this" {
   }
 
   spec {
-    description  = "MinIO application project for cluster ${var.destination_cluster}"
+    description  = "nifi application project for cluster ${var.destination_cluster}"
     source_repos = [var.project_source_repo]
 
 
@@ -38,13 +38,67 @@ data "utils_deep_merge_yaml" "values" {
   input = [for i in concat(local.helm_values, var.helm_values) : yamlencode(i)]
 }
 
+resource "argocd_application" "crds" {
+  metadata {
+    name      = "nifi-crds"
+    namespace = var.argocd_namespace
+  }
+
+  wait = var.app_autosync == { "allow_empty" = tobool(null), "prune" = tobool(null), "self_heal" = tobool(null) } ? false : true
+
+  spec {
+    project = argocd_project.this.metadata.0.name
+
+    source {
+      repo_url        = var.project_source_repo
+      path            = "charts/nifi/crds"
+      target_revision = var.target_revision
+    }
+
+    destination {
+      name      = "in-cluster"
+      namespace = var.namespace
+    }
+
+    sync_policy {
+      dynamic "automated" {
+        for_each = toset(var.app_autosync == { "allow_empty" = tobool(null), "prune" = tobool(null), "self_heal" = tobool(null) } ? [] : [var.app_autosync])
+        content {
+          prune       = automated.value.prune
+          self_heal   = automated.value.self_heal
+          allow_empty = automated.value.allow_empty
+        }
+      }
+
+      retry {
+        backoff {
+          duration     = "20s"
+          max_duration = "2m"
+          factor       = "2"
+        }
+        limit = "5"
+      }
+
+      sync_options = [
+        "CreateNamespace=true"
+      ]
+
+
+    }
+  }
+
+  depends_on = [
+    resource.null_resource.dependencies,
+  ]
+}
+
 
 resource "argocd_application" "this" {
   metadata {
-    name      = var.destination_cluster != "in-cluster" ? "minio-${var.destination_cluster}" : "minio"
+    name      = var.destination_cluster != "in-cluster" ? "nifi-${var.destination_cluster}" : "nifi"
     namespace = var.argocd_namespace
     labels = merge({
-      "application" = "minio"
+      "application" = "nifi"
       "cluster"     = var.destination_cluster
     }, var.argocd_labels)
   }
@@ -61,10 +115,11 @@ resource "argocd_application" "this" {
 
     source {
       repo_url        = var.project_source_repo
-      path            = "charts/minio"
+      path            = "charts/nifi"
       target_revision = var.target_revision
       helm {
-        values = data.utils_deep_merge_yaml.values.output
+        skip_crds = true
+        values    = data.utils_deep_merge_yaml.values.output
       }
     }
 
@@ -108,16 +163,5 @@ resource "argocd_application" "this" {
 resource "null_resource" "this" {
   depends_on = [
     resource.argocd_application.this,
-  ]
-}
-
-data "kubernetes_service" "minio" {
-  metadata {
-    name      = "minio"
-    namespace = var.namespace
-  }
-
-  depends_on = [
-    null_resource.this
   ]
 }

@@ -613,3 +613,39 @@ module "argocd" {
 #   ]
 # }
 # EOF
+
+
+module "zookeeper" {
+  source                 = "./modules/zookeeper"
+  cluster_name           = local.cluster_name
+  base_domain            = local.base_domain
+  cluster_issuer         = local.cluster_issuer
+  argocd_namespace       = module.argocd_bootstrap.argocd_namespace
+  enable_service_monitor = local.enable_service_monitor
+  oidc                   = module.oidc.oidc
+  target_revision        = local.target_revision
+  project_source_repo    = local.project_source_repo
+  dependency_ids = {
+    traefik      = module.traefik.id
+    cert-manager = module.cert-manager.id
+    oidc         = module.oidc.id
+  }
+}
+
+module "nifi" {
+  source                 = "./modules/nifi"
+  cluster_name           = local.cluster_name
+  base_domain            = local.base_domain
+  cluster_issuer         = local.cluster_issuer
+  argocd_namespace       = module.argocd_bootstrap.argocd_namespace
+  enable_service_monitor = local.enable_service_monitor
+  oidc                   = module.oidc.oidc
+  target_revision        = local.target_revision
+  project_source_repo    = local.project_source_repo
+  dependency_ids = {
+    traefik      = module.traefik.id
+    cert-manager = module.cert-manager.id
+    oidc         = module.oidc.id
+    zookeeper    = module.zookeeper.id
+  }
+}
