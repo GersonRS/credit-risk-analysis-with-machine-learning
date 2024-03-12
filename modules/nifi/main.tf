@@ -47,7 +47,7 @@ resource "argocd_application" "crds" {
   wait = var.app_autosync == { "allow_empty" = tobool(null), "prune" = tobool(null), "self_heal" = tobool(null) } ? false : true
 
   spec {
-    project = argocd_project.this.metadata.0.name
+    project = var.argocd_project == null ? argocd_project.this[0].metadata.0.name : var.argocd_project
 
     source {
       repo_url        = var.project_source_repo
@@ -156,7 +156,7 @@ resource "argocd_application" "this" {
   }
 
   depends_on = [
-    resource.null_resource.dependencies,
+    resource.argocd_application.crds,
   ]
 }
 

@@ -1,9 +1,9 @@
 locals {
   helm_values = [{
-    oicd = {
+    oidc = {
       url           = "${var.oidc.issuer_url}/.well-known/openid-configuration"
-      client_id     = var.oicd.client_id
-      client_secret = var.oicd.client_secret
+      client_id     = var.oidc.client_id
+      client_secret = var.oidc.client_secret
     }
   }]
 }

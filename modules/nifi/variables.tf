@@ -96,7 +96,7 @@ variable "project_source_repo" {
 #######################
 
 variable "oidc" {
-  description = "OIDC configuration to access the MinIO web interface."
+  description = "OIDC configuration to access the Nifi web interface."
 
   type = object({
     issuer_url              = string
