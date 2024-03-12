@@ -7,7 +7,7 @@ spec:
     headlessEnabled: true
     labels:
       cluster-name: simplenifi
-  zkAddress: "zookeeper.zookeeper:2181"
+  zkAddress: "zookeeper.zookeeper.svc.cluster.local:2181"
   zkPath: /simplenifi
   externalServices:
     - metadata:
