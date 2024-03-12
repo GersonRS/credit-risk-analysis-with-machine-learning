@@ -45,9 +45,6 @@ resource "argocd_project" "this" {
 resource "kubernetes_namespace" "kube_prometheus_stack_namespace" {
   metadata {
     name = var.namespace
-    labels = {
-      "istio-injection" = "enabled"
-    }
   }
 }
 

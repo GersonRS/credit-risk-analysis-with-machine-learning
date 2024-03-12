@@ -10,7 +10,12 @@ module "metallb" {
 }
 
 module "argocd_bootstrap" {
-  source     = "./modules/argocd_bootstrap"
+  source = "./modules/argocd_bootstrap"
+  argocd_projects = {
+    "${local.cluster_name}" = {
+      destination_cluster = "in-cluster"
+    }
+  }
   depends_on = [module.kind]
 }
 
