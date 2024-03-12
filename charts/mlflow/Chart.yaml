@@ -1,0 +1,8 @@
+apiVersion: v2
+name: mlflow
+description: A Helm chart for Mlflow open source platform for the machine learning lifecycle
+version: "0"
+dependencies:
+  - name: mlflow
+    repository: https://community-charts.github.io/helm-charts/
+    version: "*.*.*"

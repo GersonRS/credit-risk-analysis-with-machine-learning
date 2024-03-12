@@ -1,0 +1,11 @@
+apiVersion: "v2"
+name: "kserve"
+version: "0"
+description: |
+  This chart installs kserve. It needs to be deployed after the chart that
+  deploys the kserve.
+
+# dependencies:
+#   - name: kserve
+#     repository: https://community-charts.github.io/helm-charts
+#     version: "*.*.*"

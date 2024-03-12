@@ -4,8 +4,8 @@ resource "null_resource" "dependencies" {
 
 resource "keycloak_realm" "modern_gitops_stack" {
   realm                       = "modern-gitops-stack"
-  display_name                = "Modern gitops Stack"
-  display_name_html           = "<img width='200px' src='https://raw.githubusercontent.com/GersonRS/modern-gitops-stack/main/.github/assets/images/logo.png' alt='Modern gitops Stack Logo'/>"
+  display_name                = "Modern GitOps Stack"
+  display_name_html           = "<img width='200px' src='https://raw.githubusercontent.com/GersonRS/credit-risk-analysis-with-machine-learning/main/.github/assets/images/logo.png' alt='Modern GitOps Stack Logo'/>"
   login_with_email_allowed    = true
   default_signature_algorithm = "RS256"
   access_code_lifespan        = "1h"
@@ -27,7 +27,7 @@ resource "random_password" "client_secret" {
 
 resource "keycloak_openid_client" "modern_gitops_stack" {
   realm_id                     = resource.keycloak_realm.modern_gitops_stack.id
-  name                         = "Modern gitops Stack Applications"
+  name                         = "Modern GitOps Stack Applications"
   client_id                    = local.oidc.client_id
   client_secret                = resource.random_password.client_secret.result
   access_type                  = "CONFIDENTIAL"

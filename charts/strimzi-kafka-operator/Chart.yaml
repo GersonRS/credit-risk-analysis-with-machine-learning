@@ -1,0 +1,8 @@
+apiVersion: v2
+description: "Strimzi: Apache Kafka running on Kubernetes"
+name: strimzi-kafka-operator
+version: "0"
+dependencies:
+  - name: strimzi-kafka-operator
+    repository: oci://quay.io/strimzi-helm
+    version: "*.*.*"

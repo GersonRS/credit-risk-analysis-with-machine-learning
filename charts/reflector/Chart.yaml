@@ -1,0 +1,8 @@
+apiVersion: v2
+description: A Helm chart to deploy Reflector
+name: reflector
+version: "0"
+dependencies:
+  - name: reflector
+    repository: https://emberstack.github.io/helm-charts/
+    version: "*.*.*"

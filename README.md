@@ -5,31 +5,31 @@
 *** Thank you again! Now let's run this amazing project : D
 -->
 
-# Modern GitOps Stack
+# Machine Learning Model Orchestration
 
 <!-- PROJECT SHIELDS -->
 
 [![npm](https://img.shields.io/badge/type-Open%20Project-green?&style=plastic)](https://img.shields.io/badge/type-Open%20Project-green)
-[![GitHub last commit](https://img.shields.io/github/last-commit/GersonRS/modern-gitops-stack?logo=github&style=plastic)](https://github.com/GersonRS/modern-gitops-stack/commits/master)
-[![GitHub Issues](https://img.shields.io/github/issues/gersonrs/modern-gitops-stack?logo=github&style=plastic)](https://github.com/GersonRS/modern-gitops-stack/issues)
-[![GitHub Language](https://img.shields.io/github/languages/top/gersonrs/modern-gitops-stack?&logo=github&style=plastic)](https://github.com/GersonRS/modern-gitops-stack/search?l=python)
-[![GitHub Repo-Size](https://img.shields.io/github/repo-size/GersonRS/modern-gitops-stack?logo=github&style=plastic)](https://img.shields.io/github/repo-size/GersonRS/modern-gitops-stack)
-[![GitHub Contributors](https://img.shields.io/github/contributors/GersonRS/modern-gitops-stack?logo=github&style=plastic)](https://img.shields.io/github/contributors/GersonRS/modern-gitops-stack)
-[![GitHub Stars](https://img.shields.io/github/stars/GersonRS/modern-gitops-stack?logo=github&style=plastic)](https://img.shields.io/github/stars/GersonRS/modern-gitops-stack)
-[![NPM](https://img.shields.io/github/license/GersonRS/modern-gitops-stack?&style=plastic)](LICENSE)
+[![GitHub last commit](https://img.shields.io/github/last-commit/GersonRS/data-engineering-for-machine-learning?logo=github&style=plastic)](https://github.com/GersonRS/data-engineering-for-machine-learning/commits/master)
+[![GitHub Issues](https://img.shields.io/github/issues/gersonrs/data-engineering-for-machine-learning?logo=github&style=plastic)](https://github.com/GersonRS/data-engineering-for-machine-learning/issues)
+[![GitHub Language](https://img.shields.io/github/languages/top/gersonrs/data-engineering-for-machine-learning?&logo=github&style=plastic)](https://github.com/GersonRS/data-engineering-for-machine-learning/search?l=python)
+[![GitHub Repo-Size](https://img.shields.io/github/repo-size/GersonRS/data-engineering-for-machine-learning?logo=github&style=plastic)](https://img.shields.io/github/repo-size/GersonRS/data-engineering-for-machine-learning)
+[![GitHub Contributors](https://img.shields.io/github/contributors/GersonRS/data-engineering-for-machine-learning?logo=github&style=plastic)](https://img.shields.io/github/contributors/GersonRS/data-engineering-for-machine-learning)
+[![GitHub Stars](https://img.shields.io/github/stars/GersonRS/data-engineering-for-machine-learning?logo=github&style=plastic)](https://img.shields.io/github/stars/GersonRS/data-engineering-for-machine-learning)
+[![NPM](https://img.shields.io/github/license/GersonRS/data-engineering-for-machine-learning?&style=plastic)](LICENSE)
 [![Status](https://img.shields.io/badge/status-active-success.svg)](https://img.shields.io/badge/status-active-success.svg)
 
 <p align="center">
   <img alt="logo" src=".github/assets/images/logo.png"/>
 </p>
 
+<!-- PROJECT LOGO -->
+
 ## Overview
 
-The Modern GitOps Stack is composed of several Terraform modules used to deploy a Kubernetes cluster along with a stack of components that will allow you to deploy applications as well as monitor and troubleshoot your cluster.
+For some time now, I've been exploring ways to modernize my machine learning journey, starting from my [master's dissertation](https://www.sciencedirect.com/science/article/abs/pii/S0957417422011721#!) on gravitational wave detection using neural networks. One of my primary objectives was to create and orchestrate machine learning models and algorithms efficiently.
 
-The choice of the cluster module is dependant on the provider on which you wish to deploy your cluster. The Modern GitOps Stack currently supports only a local deployment using KinD. The modules that deploy the remaining components of the stack are as generic as possible, but in the future, some have provider-specific variants that deploy different resources depending on the platform.
-
-As you’ll see in this project, after the cluster is deployed, a  Argo CD is installed to then deploy the rest of the components. After all the components have been deployed, this Argo CD instance can be used to deploy your applications (we also created modules to create and configure Argo CD Applications and ApplicationSets).
+In the context of this project, think of a machine learning algorithm as an application that takes some data as input, learns from that data during training, and can then make predictions when new data is fed into it. The machine learning model represents the output of this entire process.
 
 ## Table of Contents
 
@@ -43,14 +43,16 @@ As you’ll see in this project, after the cluster is deployed, a  Argo CD is in
 * [Troubleshooting](#troubleshooting)
   + [connection_error during the first deployment](#connection_error-during-the-first-deployment)
   + [loki stack promtail pods stuck with status CrashLoopBackOff](#loki-stack-promtail-pods-stuck-with-status-crashloopbackoff)
-* [Contributions](#sontributions)
+  + [Jupyterhub Login](#jupyterhub-login)
+  + [Install libs Python](#install-libs-python)
+* [Contributions](#contributions)
 * [License](#license)
 * [Contact](#contact)
 * [Acknowledgments](#acknowledgments)
 
 ## Objective
 
-The purpose of this repository is to provide a framework and series of tools for data orchestration and GitOps, with the aim of facilitating the management of end-to-end data workflows. By leveraging Terraform and type, the project can be easily configured to provide a practical playground that includes tools capable of performing data extraction, transformation and loading, validation, and monitoring.
+In the realm of machine learning, orchestrating the training and deployment of models can be a complex task. This project aims to streamline and automate the end-to-end machine learning process, encompassing data ingestion, data processing, model training with hyperparameter optimization, experiment tracking, model evaluation, and model deployment in the context of gravitational wave detection using neural networks.
 
 ## Versioning Flow
 
@@ -76,17 +78,23 @@ The following tools are used in this project:
 
 * **Minio**: A cloud storage server compatible with Amazon S3, providing object storage for applications.
 
-* **kube-prometheus-stack**: A collection of Kubernetes manifests, Grafana dashboards, and Prometheus rules combined with documentation and scripts to provide easy to operate end-to-end Kubernetes cluster monitoring with Prometheus using the Prometheus Operator.
+* **Postgres**: A relational database used to store application data.
 
-* **loki-stack**: Loki is a horizontally-scalable, highly-available, multi-tenant log aggregation system inspired by Prometheus. It is designed to be very cost effective and easy to operate. It does not index the contents of the logs, but rather a set of labels for each log stream.
+* **MLflow**: A Machine Learning lifecycle management platform, simplifying the deployment and tracking of ML models.
 
-* **thanos**: Thanos is a highly available metrics system that can be added on top of existing Prometheus deployments, providing a global query view across all Prometheus installations.
+* **JupyterHub**: A multi-user Jupyter environment, allowing users to write and share code collaboratively.
+
+* **Airflow**: An open-source platform to programmatically author, schedule, and monitor workflows.
+
+* **Spark**: An open-source, distributed computing system that provides an interface for programming entire clusters with implicit data parallelism and fault tolerance.
+
+* **Ray**: An open-source distributed computing framework that brings the power of Python to distributed computing.
 
 These tools together enable the creation of a complete infrastructure for the development and management of Machine Learning applications in the Kubernetes environment.
 
 ## Requirements
 
-To use Modern GitOps Stack, you need to have the following prerequisites installed and configured:
+To use ML Model Orchestration, you need to have the following prerequisites installed and configured:
 
 1. Terraform:
     - Installation: Visit the [Terraform website](https://www.terraform.io/downloads.html) and follow the instructions for your operating system.
@@ -99,17 +107,17 @@ To use Modern GitOps Stack, you need to have the following prerequisites install
 
 ## Getting Started
 
-To get started with the Modern GitOps Stack, follow these steps:
+To get started with the MLflow POC, follow these steps:
 
 1. Clone this repository to your local computer.
-    - `git clone https://github.com/GersonRS/modern-gitops-stack.git`
+    - `git clone https://github.com/GersonRS/data-engineering-for-machine-learning`
 2. Change directory to the repository:
-    - `cd modern-gitops-stack`
+    - `cd data-engineering-for-machine-learning`
 
 > Make sure you have Terraform installed on your system, along with other necessary dependencies.
 
 3. Run `terraform init` to initialize Terraform configurations.
-* 
+*
 
 ```sh
   terraform init
@@ -118,7 +126,7 @@ To get started with the Modern GitOps Stack, follow these steps:
 > `This command will download the necessary Terraform plugins and modules.`
 
 4. Run `terraform apply` to start the provisioning process. Wait until the infrastructure is ready for use.
-* 
+*
 
 ```
   terraform apply
@@ -128,15 +136,31 @@ To get started with the Modern GitOps Stack, follow these steps:
 
 5. After the Terraform apply is complete, the output will display URLs for accessing the applications. Use the provided URLs to interact with the applications.
 6. The Terraform output will also provide the credentials necessary for accessing and managing the applications. Run `terraform output` to get the credentials.
-* 
+*
 
 ```
-  terraform output -json credentials
+  terraform output -json
   ```
 
 ## Usage
 
-Once the infrastructure is successfully provisioned, you can utilize the installed applications.
+Once the infrastructure is successfully provisioned, you can utilize the installed applications, including MLflow, to track and manage your Machine Learning experiments. Access the applications through the provided URLs and log in using the credentials generated during setup. Follow these steps to utilize the Proof of Concept (PoC):
+
+1. Access the JupyterHub URL: After the infrastructure is provisioned using Terraform, you will receive the JupyterHub URL as an output. Open a web browser and navigate to this URL.
+
+2. Log in to JupyterHub: On the JupyterHub login page, click on "Sign in with Keycloak." Use the credentials provided in the output of the Terraform apply command, as mentioned in step 6 of the previous section.
+
+3. Access Jupyter Notebook: Upon successful login, you will have access to a Jupyter Notebook environment. Locate the "/opt/bitnami/jupyterhub-singleuser" directory within the Jupyter environment.
+
+4. Upload Files: Upload the files from the "code" folder of this repository into the "/opt/bitnami/jupyterhub-singleuser" directory.
+
+5. Execute "main.ipynb": Open the "main.ipynb" Jupyter Notebook file and execute it. This notebook contains the necessary code to initiate the Proof of Concept.
+
+6. Monitor Experiment in MLflow: Upon execution of the notebook, the MLflow experiment will be initiated. To monitor the experiment, access the MLflow URL provided in the output of the Terraform apply command. This URL will allow you to track and analyze the results of the PoC.
+
+Please note that these steps provide a high-level overview of the usage process. Ensure you have met all the requirements mentioned in the "Requirements" section before proceeding with the above steps. Additionally, refer to the provided documentation and comments within the code for any further instructions or configurations.
+
+If you encounter any problems, refer to the [Troubleshooting](#troubleshooting) section for potential solutions to common issues that may arise during the setup and usage of the PoC.
 
 ### Stop the cluster
 
@@ -166,29 +190,29 @@ kind delete cluster
 This project follows a structured directory layout to organize its resources effectively:
 
 ```sh
-.
-├── charts
-├── LICENSE
-├── locals.tf
-├── main.tf
-├── modules
-│   ├── argocd
-│   ├── argocd_bootstrap
-│   ├── cert-manager
-│   ├── keycloak
-│   ├── kind
-│   ├── kube-prometheus-stack
-│   ├── loki-stack
-│   ├── metallb
-│   ├── minio
-│   ├── oidc
-│   ├── thanos
-│   └── traefik
-├── outputs.tf
-├── pyproject.toml
-├── README.md
-├── terraform.tf
-└── variables.tf
+    .
+    ├── LICENSE
+    ├── locals.tf
+    ├── main.tf
+    ├── modules
+    │   ├── argocd
+    │   ├── cert-manager
+    │   ├── jupyterhub
+    │   ├── keycloak
+    │   ├── kind
+    │   ├── kube-prometheus-stack
+    │   ├── metallb
+    │   ├── minio
+    │   ├── mlflow
+    │   ├── oidc
+    │   ├── postgresql
+    │   └── traefik
+    ├── outputs.tf
+    ├── README.md
+    ├── terraform.tf
+    └── variables.tf
+
+    15 directories, 83 files
 ```
 
 * [**charts**](charts/) - Directory containing all the helm charts used in the project.
@@ -198,14 +222,14 @@ This project follows a structured directory layout to organize its resources eff
 * [**modules**](modules/) - Directory containing all the Terraform modules used in the project.
   + [**argocd**](modules/argocd/) - Directory for configuring ArgoCD application.
   + [**cert-manager**](modules/cert-manager/) - Directory for managing certificates using Cert Manager.
-  + [**jupyterhub**](modules/kube-prometheus-stack/) - Directory for setting up Prometheus monitor.
+  + [**jupyterhub**](modules/jupyterhub/) - Directory for setting up JupyterHub application.
   + [**keycloak**](modules/keycloak/) - Directory for installing and configuring Keycloak.
   + [**kind**](modules/kind/) - Directory for creating a Kubernetes cluster using Kind.
   + [**metallb**](modules/metallb/) - Directory for setting up MetalLB, a load balancer for Kubernetes.
   + [**minio**](modules/minio/) - Directory for deploying and configuring Minio for object storage.
-  + [**mlflow**](modules/loki-stack/) - Directory for setting up Loki-stack.
+  + [**mlflow**](modules/mlflow/) - Directory for setting up MLflow, a machine learning lifecycle management platform.
   + [**oidc**](modules/oidc/) - Directory for OpenID Connect (OIDC) configuration.
-  + [**postgresql**](modules/thanos/) - Directory for deploying and configuring Thanos.
+  + [**postgresql**](modules/postgresql/) - Directory for deploying and configuring PostgreSQL database.
   + [**traefik**](modules/traefik/) - Directory for setting up Traefik, an ingress controller for Kubernetes.
 * [**outputs.tf**](outputs.tf) - Terraform outputs file.
 * [**pyproject.toml**](pyproject.toml) - Poetry config.
@@ -253,6 +277,42 @@ sudo sysctl fs.inotify.max_user_instances=512
 echo 'fs.inotify.max_user_instances=512' >> /etc/sysctl.conf
 ```
 
+### Jupyterhub Login:
+
+If you encounter a login error, specifically an error 500, while attempting to access JupyterHub, follow these steps to resolve the issue:
+
+1. Access MinIO Storage: In case of a login error, navigate to the MinIO Storage using the provided MinIO URL available in the Terraform output.
+
+2. Single Sign-On (SSO) Login: Log in to MinIO using the Single Sign-On (SSO) credentials. This will establish a session that will allow you to successfully log in to other components.
+
+3. Return to JupyterHub: After successfully logging in to MinIO, return to the JupyterHub login page.
+
+4. Refresh the Page: Refresh the JupyterHub page. This will complete the login process, and you should now have access to the Jupyter Notebook environment.
+
+This troubleshooting procedure is specifically designed to address login errors that result in an error 500 when accessing JupyterHub. By logging in to MinIO using SSO and refreshing the JupyterHub page, you can resolve the issue and continue with the usage of the Proof of Concept.
+
+If you continue to experience login issues or encounter other technical difficulties, please refer to the provided documentation, check for any additional error messages, and ensure that you have followed all the prerequisites and setup instructions accurately.
+
+### Install libs Python
+
+Sometimes, during the installation of Python libraries in Jupyter Notebook, you may encounter an issue where the kernel does not recognize the appropriate environment. To resolve this problem, follow these steps:
+
+1. Select the Correct Kernel:
+
+When working with Jupyter Notebook, ensure that you are using the correct kernel corresponding to the specific Python environment you intend to use. To do this, follow these steps:
+
+  + a. Click on the "Kernel" option in the Jupyter Notebook toolbar.
+
+  + b. Choose the "Change Kernel" option.
+
+  + c. A dropdown menu will appear showing available kernels. Click on the option that corresponds to the name of the notebook you are working on, such as "main.ipynb" for the "main.ipynb" notebook.
+
+  + d. The notebook will now use the selected kernel, ensuring that the required Python libraries are properly recognized and utilized.
+
+By selecting the appropriate kernel, you can ensure that the Python libraries required for your specific notebook are correctly installed and utilized, mitigating any potential issues related to library compatibility or recognition.
+
+If you encounter any other issues or difficulties while using the Proof of Concept, refer to this "Troubleshooting" section for solutions to common problems. If the problem persists or if you experience unique challenges, consider consulting the provided documentation or seeking assistance from the community.
+
 ## Contributions
 
 Contributions are welcome! Feel free to create a pull request with improvements, bug fixes, or new features. Contributions are what make the open source community an amazing place to learn, inspire, and create. Any contribution you make will be greatly appreciated.
@@ -284,4 +344,4 @@ For any inquiries or questions, please contact:
 
 ## Acknowledgments
 
-We appreciate your interest in using the Modern GitOps Stack. We hope this configuration simplifies the management of your data pipelines experiments on Kubernetes! 🚀📊
+We appreciate your interest in using ML Model Orchestration on Kubernetes. We hope this configuration simplifies the management of your Machine Learning experiments on Kubernetes! 🚀📊
