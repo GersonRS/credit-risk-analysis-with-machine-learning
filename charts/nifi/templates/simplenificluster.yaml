@@ -10,6 +10,7 @@ spec:
   zkAddress: "zookeeper.zookeeper:2181"
   zkPath: "/simplenifi"
   clusterImage: "apache/nifi:1.11.3"
+  initContainerImage: "bash:5.2.2"
   oneNifiNodePerNode: false
   managedAdminUsers:
     - identity: "moderngitopsadmin@modern-gitops-stack.io"
@@ -65,8 +66,9 @@ spec:
   readOnlyConfig:
     nifiProperties:
       webProxyHosts:
-        - nifi.MY_DOMAIN.com:8443
+        - nifi.apps.kind.172-18-0-100.nip.io/:8443
       overrideConfigs: |
+        nifi.sensitive.props.key=thisIsABadSensitiveKeyPassword
         nifi.security.user.oidc.discovery.url={{ .Values.oidc.url }}
         nifi.security.user.oidc.client.id={{ .Values.oidc.client_id }}
         nifi.security.user.oidc.client.secret={{ .Values.oidc.client_secret }}
