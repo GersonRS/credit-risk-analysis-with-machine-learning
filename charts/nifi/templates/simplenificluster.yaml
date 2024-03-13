@@ -9,7 +9,7 @@ spec:
     headlessEnabled: true
   zkAddress: "zookeeper.zookeeper:2181"
   zkPath: "/simplenifi"
-  clusterImage: "apache/nifi:1.11.3"
+  clusterImage: "apache/nifi:1.25.0"
   initContainerImage: "bash:5.2.2"
   oneNifiNodePerNode: false
   managedAdminUsers:
@@ -66,7 +66,7 @@ spec:
   readOnlyConfig:
     nifiProperties:
       webProxyHosts:
-        - nifi.apps.kind.172-18-0-100.nip.io/:8443
+        - nifi.apps.kind.172-18-0-100.nip.io:8443
       overrideConfigs: |
         nifi.sensitive.props.key=thisIsABadSensitiveKeyPassword
         nifi.security.user.oidc.discovery.url={{ .Values.oidc.url }}
