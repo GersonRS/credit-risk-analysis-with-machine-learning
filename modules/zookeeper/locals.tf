@@ -4,7 +4,7 @@ locals {
       global = {
         storageClass = "standard"
       }
-      replicaCount = 3
+      replicaCount = 1
       resources = {
         requests = {
           memory = "256Mi"

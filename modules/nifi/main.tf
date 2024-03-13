@@ -78,10 +78,6 @@ resource "argocd_application" "crds" {
         }
         limit = "5"
       }
-
-      sync_options = [
-        "CreateNamespace=true"
-      ]
     }
   }
   depends_on = [
@@ -143,7 +139,6 @@ resource "argocd_application" "nifikop" {
         }
         limit = "5"
       }
-
       sync_options = [
         "CreateNamespace=true"
       ]

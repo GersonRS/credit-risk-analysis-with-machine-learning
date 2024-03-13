@@ -3,5 +3,5 @@ dependencies:
   - name: nifikop
     repository: oci://ghcr.io/konpyutaika/helm-charts
     version: "*.*.*"
-name: nifi
+name: nifikop
 version: "0"
