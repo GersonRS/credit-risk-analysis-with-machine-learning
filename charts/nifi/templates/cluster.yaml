@@ -107,9 +107,9 @@ spec:
       spec:
         portConfigs:
           - internalListenerName: https
-            port: 443
+            port: 8443
           - internalListenerName: http-tracking
-            port: 80
+            port: 8080
         type: LoadBalancer
   listenersConfig:
     internalListeners:
