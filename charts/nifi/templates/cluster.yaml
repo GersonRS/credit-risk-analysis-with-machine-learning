@@ -110,7 +110,7 @@ spec:
             port: 443
           - internalListenerName: http-tracking
             port: 80
-        type: ClusterIP
+        type: LoadBalancer
   listenersConfig:
     internalListeners:
       - type: "https"
