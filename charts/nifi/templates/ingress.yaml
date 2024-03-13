@@ -19,9 +19,9 @@ spec:
           pathType: Prefix
           backend:
             service:
-              name: sslnifi-headless
+              name: cluster-access
               port:
-                number: 8443
+                number: 443
     {{- end }}
   {{- if .Values.nifi.ingress.tls }}
   tls:
