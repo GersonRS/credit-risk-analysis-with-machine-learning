@@ -17,10 +17,10 @@ locals {
           "kubernetes.io/ingress.allow-http"                 = "false"
         }
         hosts = [
-          {
-            host = "nifi.apps.${var.base_domain}"
-            path = "/"
-          },
+          # {
+          #   host = "nifi.apps.${var.base_domain}"
+          #   path = "/"
+          # },
           {
             host = "nifi.apps.${var.cluster_name}.${var.base_domain}"
             path = "/"
@@ -29,7 +29,7 @@ locals {
         tls = [{
           secretName = "nifi-tls"
           hosts = [
-            "nifi.apps.${var.base_domain}",
+            # "nifi.apps.${var.base_domain}",
             "nifi.apps.${var.cluster_name}.${var.base_domain}"
           ]
         }]

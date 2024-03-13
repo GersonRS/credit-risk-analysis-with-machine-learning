@@ -22,7 +22,7 @@ spec:
     # NifiProperties configuration that will be applied to the node.
     nifiProperties:
       webProxyHosts:
-        - nifistandard2.trycatchlearn.fr:8443
+        - localhost:8443
       # Additionnal nifi.properties configuration that will override the one produced based
       # on template and configurations.
       overrideConfigs: |
