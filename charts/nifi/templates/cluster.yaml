@@ -45,7 +45,7 @@ spec:
             storageClassName: "standard"
             resources:
               requests:
-                storage: 10Gi
+                storage: 2Gi
         - mountPath: "/opt/nifi/data"
           name: data
           pvcSpec:
@@ -54,7 +54,7 @@ spec:
             storageClassName: "standard"
             resources:
               requests:
-                storage: 10Gi
+                storage: 2Gi
         - mountPath: "/opt/nifi/flowfile_repository"
           name: flowfile-repository
           pvcSpec:
@@ -63,7 +63,7 @@ spec:
             storageClassName: "standard"
             resources:
               requests:
-                storage: 10Gi
+                storage: 2Gi
         - mountPath: "/opt/nifi/nifi-current/conf"
           name: conf
           pvcSpec:
@@ -72,7 +72,7 @@ spec:
             storageClassName: "standard"
             resources:
               requests:
-                storage: 10Gi
+                storage: 2Gi
         - mountPath: "/opt/nifi/content_repository"
           name: content-repository
           pvcSpec:
@@ -81,7 +81,7 @@ spec:
             storageClassName: "standard"
             resources:
               requests:
-                storage: 10Gi
+                storage: 2Gi
         - mountPath: "/opt/nifi/provenance_repository"
           name: provenance-repository
           pvcSpec:
@@ -90,7 +90,7 @@ spec:
             storageClassName: "standard"
             resources:
               requests:
-                storage: 10Gi
+                storage: 2Gi
       serviceAccountName: "default"
       resourcesRequirements:
         limits:
@@ -101,10 +101,6 @@ spec:
           memory: 1Gi
   nodes:
     - id: 0
-      nodeConfigGroup: "default_group"
-    - id: 1
-      nodeConfigGroup: "default_group"
-    - id: 2
       nodeConfigGroup: "default_group"
   listenersConfig:
     sslSecrets:
