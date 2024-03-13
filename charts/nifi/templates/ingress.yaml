@@ -1,0 +1,36 @@
+---
+{{ if .Values.nifi.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nifi
+  {{- with .Values.nifi.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  ingressClassName: {{ .Values.nifi.ingress.ingressClassName }}
+  rules:
+    {{- range .Values.nifi.ingress.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+        - path: {{ .path | quote }}
+          pathType: Prefix
+          backend:
+            service:
+              name: sslnifi-headless
+              port:
+                number: 8443
+    {{- end }}
+  {{- if .Values.nifi.ingress.tls }}
+  tls:
+    {{- range .Values.nifi.ingress.tls }}
+    - hosts:
+        {{- range .hosts }}
+        - {{ . | quote }}
+        {{- end }}
+      secretName: {{ .secretName }}
+    {{- end }}
+  {{- end }}
+{{ end }}
