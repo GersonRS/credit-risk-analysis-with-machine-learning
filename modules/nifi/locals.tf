@@ -5,5 +5,21 @@ locals {
       client_id     = var.oidc.client_id
       client_secret = var.oidc.client_secret
     }
+    nifikop = {
+      image = {
+        tag = "v1.7.0-release"
+      }
+      resources = {
+        requests = {
+          memory = "256Mi"
+          cpu    = "250m"
+        }
+        limits = {
+          memory = "256Mi"
+          cpu    = "250m"
+        }
+      }
+      namespaces = ["nifi"]
+    }
   }]
 }
