@@ -2,7 +2,7 @@ locals {
   helm_values = [{
     nifi = {
       oidc = {
-        url           = "keycloak.keycloak.svc.cluster.local/realms/modern-gitops-stac/.well-known/openid-configuration"
+        url           = "http://keycloak.keycloak.svc.cluster.local/realms/modern-gitops-stack/.well-known/openid-configuration"
         client_id     = var.oidc.client_id
         client_secret = var.oidc.client_secret
       }

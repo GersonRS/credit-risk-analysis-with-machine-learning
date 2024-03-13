@@ -27,9 +27,12 @@ spec:
       # on template and configurations.
       overrideConfigs: |
         nifi.sensitive.props.key=thisIsABadSensitiveKeyPassword
+        nifi.remote.input.secure=false
+        nifi.web.https.port=8443
         nifi.security.user.oidc.discovery.url={{ .Values.nifi.oidc.url }}
         nifi.security.user.oidc.client.id={{ .Values.nifi.oidc.client_id }}
         nifi.security.user.oidc.client.secret={{ .Values.nifi.oidc.client_secret }}
+        nifi.security.user.oidc.tls.insecure.skip.verify=true
         nifi.security.identity.mapping.pattern.dn=CN=([^,]*)(?:, (?:O|OU)=.*)?
         nifi.security.identity.mapping.value.dn=$1
         nifi.security.identity.mapping.transform.dn=NONE
