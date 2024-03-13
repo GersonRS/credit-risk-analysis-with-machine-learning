@@ -1,30 +1,34 @@
 apiVersion: nifi.konpyutaika.com/v1
 kind: NifiCluster
 metadata:
-  name: sslnifi
+  name: simplenifi
 spec:
   service:
     headlessEnabled: true
+    labels:
+      cluster-name: simplenifi
   zkAddress: "zookeeper.zookeeper:2181"
-  zkPath: "/ssllnifi"
-  clusterImage: "apache/nifi:1.17.0"
-  oneNifiNodePerNode: false
+  zkPath: /simplenifi
+  externalServices:
+    - name: cluster-access
+      spec:
+        portConfigs:
+          - internalListenerName: https
+            port: 443
+          - internalListenerName: http-tracking
+            port: 80
+        type: LoadBalancer
+  clusterImage: "apache/nifi:1.23.2"
+  initContainerImage: "bash:5.2.2"
+  oneNifiNodePerNode: true
   managedAdminUsers:
     - identity: "moderngitopsadmin@modern-gitops-stack.io"
       name: "moderngitopsadmin"
   managedReaderUsers:
     - identity: "toton@orange.com"
       name: "toto"
-  propagateLabels: true
-  nifiClusterTaskSpec:
-    retryDurationMinutes: 10
   readOnlyConfig:
-    # NifiProperties configuration that will be applied to the node.
     nifiProperties:
-      webProxyHosts:
-        - nifistandard2.trycatchlearn.fr:8443
-      # Additionnal nifi.properties configuration that will override the one produced based
-      # on template and configurations.
       overrideConfigs: |
         nifi.sensitive.props.key=thisIsABadSensitiveKeyPassword
         nifi.security.user.oidc.discovery.url={{ .Values.oidc.url }}
@@ -33,75 +37,40 @@ spec:
         nifi.security.identity.mapping.pattern.dn=CN=([^,]*)(?:, (?:O|OU)=.*)?
         nifi.security.identity.mapping.value.dn=$1
         nifi.security.identity.mapping.transform.dn=NONE
+  pod:
+    labels:
+      cluster-name: simplenifi
   nodeConfigGroups:
     default_group:
+      imagePullPolicy: IfNotPresent
       isNode: true
+      serviceAccountName: default
       storageConfigs:
         - mountPath: "/opt/nifi/nifi-current/logs"
           name: logs
+          reclaimPolicy: Delete
           pvcSpec:
             accessModes:
               - ReadWriteOnce
             storageClassName: "standard"
             resources:
               requests:
-                storage: 2Gi
-        - mountPath: "/opt/nifi/data"
-          name: data
-          pvcSpec:
-            accessModes:
-              - ReadWriteOnce
-            storageClassName: "standard"
-            resources:
-              requests:
-                storage: 2Gi
-        - mountPath: "/opt/nifi/flowfile_repository"
-          name: flowfile-repository
-          pvcSpec:
-            accessModes:
-              - ReadWriteOnce
-            storageClassName: "standard"
-            resources:
-              requests:
-                storage: 2Gi
-        - mountPath: "/opt/nifi/nifi-current/conf"
-          name: conf
-          pvcSpec:
-            accessModes:
-              - ReadWriteOnce
-            storageClassName: "standard"
-            resources:
-              requests:
-                storage: 2Gi
-        - mountPath: "/opt/nifi/content_repository"
-          name: content-repository
-          pvcSpec:
-            accessModes:
-              - ReadWriteOnce
-            storageClassName: "standard"
-            resources:
-              requests:
-                storage: 2Gi
-        - mountPath: "/opt/nifi/provenance_repository"
-          name: provenance-repository
-          pvcSpec:
-            accessModes:
-              - ReadWriteOnce
-            storageClassName: "standard"
-            resources:
-              requests:
-                storage: 2Gi
-      serviceAccountName: "default"
+                storage: 10Gi
       resourcesRequirements:
         limits:
           cpu: "1"
-          memory: 1Gi
+          memory: 2Gi
         requests:
           cpu: "1"
-          memory: 1Gi
+          memory: 2Gi
   nodes:
-    - id: 0
+    - id: 1
       nodeConfigGroup: "default_group"
+    - id: 2
+      nodeConfigGroup: "default_group"
+  propagateLabels: true
+  nifiClusterTaskSpec:
+    retryDurationMinutes: 10
   listenersConfig:
     internalListeners:
       - type: "https"
@@ -113,6 +82,9 @@ spec:
       - type: "s2s"
         name: "s2s"
         containerPort: 10000
-    sslSecrets:
-      tlsSecretName: "test-nifikop"
-      create: true
+      - type: "prometheus"
+        name: "prometheus"
+        containerPort: 9090
+      - type: "load-balance"
+        name: "load-balance"
+        containerPort: 6342
