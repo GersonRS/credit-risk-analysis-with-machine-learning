@@ -23,7 +23,7 @@ locals {
           # },
           {
             host = "nifi.apps.${var.cluster_name}.${var.base_domain}"
-            path = "/nifi"
+            path = "/"
           },
         ]
         tls = [{
