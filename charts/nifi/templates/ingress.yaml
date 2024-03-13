@@ -19,7 +19,7 @@ spec:
           pathType: Prefix
           backend:
             service:
-              name: cluster-access
+              name: driver-ip
               port:
                 number: 8080
     {{- end }}
