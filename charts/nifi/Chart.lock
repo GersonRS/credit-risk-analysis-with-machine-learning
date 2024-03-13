@@ -1,0 +1,6 @@
+dependencies:
+- name: nifikop
+  repository: oci://ghcr.io/konpyutaika/helm-charts
+  version: 1.7.0
+digest: sha256:8745353876be6bb0e0e0a1d41fd05c6e88352cc73132a37e6cd4c6b2ef6e7770
+generated: "2024-03-12T21:05:30.130822181-03:00"
