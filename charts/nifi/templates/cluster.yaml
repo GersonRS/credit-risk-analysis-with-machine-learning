@@ -21,8 +21,8 @@ spec:
   readOnlyConfig:
     # NifiProperties configuration that will be applied to the node.
     nifiProperties:
-      webProxyHosts:
-        - localhost:8443
+      # webProxyHosts:
+      #   - 172.18.0.103:8443
       # Additionnal nifi.properties configuration that will override the one produced based
       # on template and configurations.
       overrideConfigs: |
