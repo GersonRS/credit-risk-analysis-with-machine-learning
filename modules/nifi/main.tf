@@ -40,7 +40,7 @@ data "utils_deep_merge_yaml" "values" {
 
 resource "argocd_application" "crds" {
   metadata {
-    name      = "nifi-crds"
+    name      = "nifikop-crds"
     namespace = var.argocd_namespace
   }
 
@@ -51,7 +51,7 @@ resource "argocd_application" "crds" {
 
     source {
       repo_url        = var.project_source_repo
-      path            = "charts/nifi/crds"
+      path            = "charts/nifikop/crds"
       target_revision = var.target_revision
     }
 
@@ -82,23 +82,20 @@ resource "argocd_application" "crds" {
       sync_options = [
         "CreateNamespace=true"
       ]
-
-
     }
   }
-
   depends_on = [
     resource.null_resource.dependencies,
   ]
 }
 
 
-resource "argocd_application" "this" {
+resource "argocd_application" "nifikop" {
   metadata {
-    name      = var.destination_cluster != "in-cluster" ? "nifi-${var.destination_cluster}" : "nifi"
+    name      = var.destination_cluster != "in-cluster" ? "nifikop-${var.destination_cluster}" : "nifikop"
     namespace = var.argocd_namespace
     labels = merge({
-      "application" = "nifi"
+      "application" = "nifikop"
       "cluster"     = var.destination_cluster
     }, var.argocd_labels)
   }
@@ -115,7 +112,7 @@ resource "argocd_application" "this" {
 
     source {
       repo_url        = var.project_source_repo
-      path            = "charts/nifi"
+      path            = "charts/nifikop"
       target_revision = var.target_revision
       helm {
         skip_crds = true
@@ -150,13 +147,69 @@ resource "argocd_application" "this" {
       sync_options = [
         "CreateNamespace=true"
       ]
-
-
     }
   }
-
   depends_on = [
     resource.argocd_application.crds,
+  ]
+}
+
+resource "argocd_application" "this" {
+  metadata {
+    name      = var.destination_cluster != "in-cluster" ? "nifi-${var.destination_cluster}" : "nifi"
+    namespace = var.argocd_namespace
+    labels = merge({
+      "application" = "nifi"
+      "cluster"     = var.destination_cluster
+    }, var.argocd_labels)
+  }
+
+  timeouts {
+    create = "15m"
+    delete = "15m"
+  }
+
+  wait = var.app_autosync == { "allow_empty" = tobool(null), "prune" = tobool(null), "self_heal" = tobool(null) } ? false : true
+
+  spec {
+    project = var.argocd_project == null ? argocd_project.this[0].metadata.0.name : var.argocd_project
+
+    source {
+      repo_url        = var.project_source_repo
+      path            = "charts/nifi"
+      target_revision = var.target_revision
+      helm {
+        values = data.utils_deep_merge_yaml.values.output
+      }
+    }
+
+    destination {
+      name      = var.destination_cluster
+      namespace = var.namespace
+    }
+
+    sync_policy {
+      dynamic "automated" {
+        for_each = toset(var.app_autosync == { "allow_empty" = tobool(null), "prune" = tobool(null), "self_heal" = tobool(null) } ? [] : [var.app_autosync])
+        content {
+          prune       = automated.value.prune
+          self_heal   = automated.value.self_heal
+          allow_empty = automated.value.allow_empty
+        }
+      }
+
+      retry {
+        backoff {
+          duration     = "20s"
+          max_duration = "2m"
+          factor       = "2"
+        }
+        limit = "5"
+      }
+    }
+  }
+  depends_on = [
+    resource.argocd_application.nifikop,
   ]
 }
 

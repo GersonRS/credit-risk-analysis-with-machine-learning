@@ -1,40 +1,45 @@
----
 apiVersion: nifi.konpyutaika.com/v1
 kind: NifiCluster
 metadata:
-  name: nifi-cluster
-  namespace: nifi
+  name: simplenifi
 spec:
   service:
     headlessEnabled: true
+    labels:
+      cluster-name: simplenifi
   zkAddress: "zookeeper.zookeeper:2181"
-  zkPath: "/simplenifi"
-  clusterImage: "apache/nifi:1.25.0"
+  zkPath: /simplenifi
+  externalServices:
+    - metadata:
+        labels:
+          cluster-name: driver-simplenifi
+      name: driver-ip
+      spec:
+        portConfigs:
+          - internalListenerName: http
+            port: 8080
+        type: LoadBalancer
+  clusterImage: "apache/nifi:1.23.2"
   initContainerImage: "bash:5.2.2"
-  oneNifiNodePerNode: false
-  managedAdminUsers:
-    - identity: "moderngitopsadmin@modern-gitops-stack.io"
-      name: "moderngitopsadmin"
+  oneNifiNodePerNode: true
+  readOnlyConfig:
+    nifiProperties:
+      overrideConfigs: |
+        nifi.sensitive.props.key=thisIsABadSensitiveKeyPassword
+  pod:
+    labels:
+      cluster-name: simplenifi
   nodeConfigGroups:
     default_group:
+      imagePullPolicy: IfNotPresent
       isNode: true
-      storageConfigs:
-        - mountPath: "/opt/nifi/nifi-current/logs"
-          name: logs
-          pvcSpec:
-            accessModes:
-              - ReadWriteOnce
-            storageClassName: "standard"
-            resources:
-              requests:
-                storage: 10Gi
-      serviceAccountName: "default"
+      serviceAccountName: default
       resourcesRequirements:
         limits:
-          cpu: "0.5"
+          cpu: "1"
           memory: 2Gi
         requests:
-          cpu: "0.5"
+          cpu: "1"
           memory: 2Gi
   nodes:
     - id: 1
@@ -44,34 +49,18 @@ spec:
     retryDurationMinutes: 10
   listenersConfig:
     internalListeners:
-      - type: "https"
-        name: "https"
-        containerPort: 8443
-      - type: "cluster"
-        name: "cluster"
-        containerPort: 6007
-      - type: "s2s"
-        name: "s2s"
-        containerPort: 10000
-    sslSecrets:
-      tlsSecretName: "nifi-staging-tls"
-      create: true
-  externalServices:
-    - name: "nifi-cluster"
-      spec:
-        type: ClusterIP
-        portConfigs:
-          - port: 8443
-            internalListenerName: "https"
-  readOnlyConfig:
-    nifiProperties:
-      webProxyHosts:
-        - nifi.apps.kind.172-18-0-100.nip.io:8443
-      overrideConfigs: |
-        nifi.sensitive.props.key=thisIsABadSensitiveKeyPassword
-        nifi.security.user.oidc.discovery.url={{ .Values.oidc.url }}
-        nifi.security.user.oidc.client.id={{ .Values.oidc.client_id }}
-        nifi.security.user.oidc.client.secret={{ .Values.oidc.client_secret }}
-        nifi.security.identity.mapping.pattern.dn=CN=([^,]*)(?:, (?:O|OU)=.*)?
-        nifi.security.identity.mapping.value.dn=$1
-        nifi.security.identity.mapping.transform.dn=NONE
+      - containerPort: 8080
+        type: http
+        name: http
+      - containerPort: 6007
+        type: cluster
+        name: cluster
+      - containerPort: 10000
+        type: s2s
+        name: s2s
+      - containerPort: 9090
+        type: prometheus
+        name: prometheus
+      - containerPort: 6342
+        type: load-balance
+        name: load-balance

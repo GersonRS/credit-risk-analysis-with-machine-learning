@@ -16,7 +16,7 @@ locals {
         }
         limits = {
           memory = "256Mi"
-          cpu    = "250m"
+          cpu    = "550m"
         }
       }
       namespaces = ["nifi"]
