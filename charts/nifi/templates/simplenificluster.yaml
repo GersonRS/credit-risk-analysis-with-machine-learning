@@ -1,14 +1,12 @@
 apiVersion: nifi.konpyutaika.com/v1
 kind: NifiCluster
 metadata:
-  name: simplenifi
+  name: sslnifi
 spec:
   service:
     headlessEnabled: true
-    labels:
-      cluster-name: simplenifi
   zkAddress: "zookeeper.zookeeper:2181"
-  zkPath: /simplenifi
+  zkPath: "/ssllnifi"
   clusterImage: "apache/nifi:1.17.0"
   oneNifiNodePerNode: false
   managedAdminUsers:
@@ -47,7 +45,7 @@ spec:
             storageClassName: "standard"
             resources:
               requests:
-                storage: 5Gi
+                storage: 10Gi
         - mountPath: "/opt/nifi/data"
           name: data
           pvcSpec:
@@ -56,7 +54,7 @@ spec:
             storageClassName: "standard"
             resources:
               requests:
-                storage: 5Gi
+                storage: 10Gi
         - mountPath: "/opt/nifi/flowfile_repository"
           name: flowfile-repository
           pvcSpec:
@@ -65,7 +63,7 @@ spec:
             storageClassName: "standard"
             resources:
               requests:
-                storage: 5Gi
+                storage: 10Gi
         - mountPath: "/opt/nifi/nifi-current/conf"
           name: conf
           pvcSpec:
@@ -74,7 +72,7 @@ spec:
             storageClassName: "standard"
             resources:
               requests:
-                storage: 5Gi
+                storage: 10Gi
         - mountPath: "/opt/nifi/content_repository"
           name: content-repository
           pvcSpec:
@@ -83,7 +81,7 @@ spec:
             storageClassName: "standard"
             resources:
               requests:
-                storage: 5Gi
+                storage: 10Gi
         - mountPath: "/opt/nifi/provenance_repository"
           name: provenance-repository
           pvcSpec:
@@ -92,17 +90,21 @@ spec:
             storageClassName: "standard"
             resources:
               requests:
-                storage: 5Gi
+                storage: 10Gi
       serviceAccountName: "default"
       resourcesRequirements:
         limits:
-          cpu: "1"
-          memory: 1Gi
+          cpu: "2"
+          memory: 3Gi
         requests:
           cpu: "1"
           memory: 1Gi
   nodes:
     - id: 0
+      nodeConfigGroup: "default_group"
+    - id: 1
+      nodeConfigGroup: "default_group"
+    - id: 2
       nodeConfigGroup: "default_group"
   listenersConfig:
     internalListeners:
