@@ -118,12 +118,12 @@ spec:
         containerPort: 6342
       - name: "http-tracking"
         containerPort: 8081
-    externalServices:
-      - name: cluster-access
-        spec:
-          portConfigs:
-            - internalListenerName: https
-              port: 443
-            - internalListenerName: http-tracking
-              port: 80
-          type: LoadBalancer
+  externalServices:
+    - name: cluster-access
+      spec:
+        portConfigs:
+          - internalListenerName: https
+            port: 443
+          - internalListenerName: http-tracking
+            port: 80
+        type: LoadBalancer
