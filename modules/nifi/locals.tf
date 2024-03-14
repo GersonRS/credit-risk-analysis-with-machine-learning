@@ -29,7 +29,7 @@ locals {
         tls = [{
           secretName = "nifi-tls"
           hosts = [
-            # "nifi.apps.${var.base_domain}",
+            "nifi.apps.${var.base_domain}",
             "nifi.apps.${var.cluster_name}.${var.base_domain}"
           ]
         }]
