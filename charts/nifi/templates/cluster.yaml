@@ -26,8 +26,9 @@ spec:
       # Additionnal nifi.properties configuration that will override the one produced based
       # on template and configurations.
       overrideConfigs: |
+        http://keycloak.keycloak.svc.cluster.local/realms/modern-gitops-stack/.well-known/openid-configuration
         nifi.sensitive.props.key=thisIsABadSensitiveKeyPassword
-        nifi.remote.input.secure=true
+        nifi.remote.input.secure=false
         nifi.web.https.port=8443
         nifi.security.keystore=
         nifi.security.keystoreType=
