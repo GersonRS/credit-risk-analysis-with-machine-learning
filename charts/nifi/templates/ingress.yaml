@@ -19,7 +19,7 @@ spec:
           pathType: Prefix
           backend:
             service:
-              name: cluster-access
+              name: cluster-access-clusterip
               port:
                 number: 443
     {{- end }}
