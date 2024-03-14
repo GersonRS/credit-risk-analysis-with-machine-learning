@@ -2,9 +2,9 @@ locals {
   helm_values = [{
     nifi = {
       oidc = {
-        url           = "http://keycloak.keycloak.svc.cluster.local/realms/modern-gitops-stack/.well-known/openid-configuration"
-        client_id     = var.oidc.client_id
-        client_secret = var.oidc.client_secret
+        url           = "${var.oidc.issuer_url}/.well-known/openid-configuration"
+        client_id     = "${var.oidc.client_id}"
+        client_secret = "${var.oidc.client_secret}"
       }
       ingress = {
         enabled = true
@@ -19,11 +19,11 @@ locals {
         hosts = [
           {
             host = "nifi.apps.${var.base_domain}"
-            path = "/nifi"
+            path = "/"
           },
           {
             host = "nifi.apps.${var.cluster_name}.${var.base_domain}"
-            path = "/nifi"
+            path = "/"
           },
         ]
         tls = [{

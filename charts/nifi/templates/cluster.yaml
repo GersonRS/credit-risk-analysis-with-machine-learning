@@ -27,8 +27,15 @@ spec:
       # on template and configurations.
       overrideConfigs: |
         nifi.sensitive.props.key=thisIsABadSensitiveKeyPassword
-        nifi.remote.input.secure=false
+        nifi.remote.input.secure=true
         nifi.web.https.port=8443
+        nifi.security.keystore=
+        nifi.security.keystoreType=
+        nifi.security.keystorePasswd=
+        nifi.security.keyPasswd=
+        nifi.security.truststore=
+        nifi.security.truststoreType=
+        nifi.security.truststorePasswd=
         nifi.security.user.oidc.discovery.url={{ .Values.nifi.oidc.url }}
         nifi.security.user.oidc.client.id={{ .Values.nifi.oidc.client_id }}
         nifi.security.user.oidc.client.secret={{ .Values.nifi.oidc.client_secret }}
