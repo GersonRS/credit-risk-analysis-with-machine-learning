@@ -121,11 +121,9 @@ spec:
           - internalListenerName: http-tracking
             port: 80
         type: LoadBalancer
-    - name: cluster-access-clusterip
+    - name: "cluster-access-clusterip"
       spec:
-        portConfigs:
-          - internalListenerName: https
-            port: 443
-          - internalListenerName: http-tracking
-            port: 80
         type: ClusterIP
+        portConfigs:
+          - port: 8443
+            internalListenerName: "https"
