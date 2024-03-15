@@ -19,9 +19,9 @@ spec:
           pathType: Prefix
           backend:
             service:
-              name: cluster-access-clusterip
+              name: driver-ip
               port:
-                number: 8443
+                number: 8080
     {{- end }}
   {{- if .Values.nifi.ingress.tls }}
   tls:

@@ -1,0 +1,57 @@
+# apiVersion: networking.istio.io/v1beta1
+# kind: Gateway
+# metadata:
+#   name: nifi-gateway
+# spec:
+#   selector:
+#     istio: ingressgateway
+#   servers:
+#   - port:
+#       number: 443
+#       name: https
+#       protocol: HTTPS
+#     tls:
+#       mode: SIMPLE
+#       credentialName: my-secret
+#     hosts:
+#     - "*"
+
+# ---
+# {{ if .Values.nifi.ingress.enabled }}
+# apiVersion: networking.istio.io/v1beta1
+# kind: VirtualService
+# metadata:
+#   name: nifi-vs
+# spec:
+#   gateways:
+#   - nifi-gateway
+#   hosts:
+#   {{- range .Values.nifi.ingress.hosts }}
+#   - {{ .host | quote }}
+#   {{- end }}
+#   http:
+#   - match:
+#     - uri:
+#         prefix: /
+#     route:
+#     - destination:
+#         host: driver-ip.nifi.svc.cluster.local
+#         port:
+#           number: 8443
+# {{ end }}
+
+# ---
+# apiVersion: networking.istio.io/v1beta1
+# kind: DestinationRule
+# metadata:
+#   name: nifi-dr
+# spec:
+#   host: driver-ip.nifi.svc.cluster.local
+#   trafficPolicy:
+#     tls:
+#       mode: SIMPLE
+#     loadBalancer:
+#       consistentHash:
+#         httpCookie:
+#           name: __Secure-Authorization-Bearer
+#           ttl: 0s
