@@ -19,11 +19,11 @@ locals {
         hosts = [
           {
             host = "nifi.apps.${var.base_domain}"
-            path = "/"
+            path = "/nifi"
           },
           {
             host = "nifi.apps.${var.cluster_name}.${var.base_domain}"
-            path = "/"
+            path = "/nifi"
           },
         ]
         tls = [{
