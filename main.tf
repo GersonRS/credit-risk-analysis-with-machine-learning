@@ -67,32 +67,32 @@ module "cert-manager" {
   }
 }
 
-module "knative" {
-  source              = "./modules/knative"
-  cluster_name        = local.cluster_name
-  base_domain         = local.gateway_base_domain
-  cluster_issuer      = local.cluster_issuer
-  argocd_namespace    = module.argocd_bootstrap.argocd_namespace
-  target_revision     = local.target_revision
-  project_source_repo = local.project_source_repo
-  dependency_ids = {
-    istio        = module.istio.id
-    cert-manager = module.cert-manager.id
-  }
-}
+# module "knative" {
+#   source              = "./modules/knative"
+#   cluster_name        = local.cluster_name
+#   base_domain         = local.gateway_base_domain
+#   cluster_issuer      = local.cluster_issuer
+#   argocd_namespace    = module.argocd_bootstrap.argocd_namespace
+#   target_revision     = local.target_revision
+#   project_source_repo = local.project_source_repo
+#   dependency_ids = {
+#     istio        = module.istio.id
+#     cert-manager = module.cert-manager.id
+#   }
+# }
 
-module "kserve" {
-  source              = "./modules/kserve"
-  cluster_name        = local.cluster_name
-  argocd_namespace    = module.argocd_bootstrap.argocd_namespace
-  target_revision     = local.target_revision
-  project_source_repo = local.project_source_repo
-  dependency_ids = {
-    istio        = module.istio.id
-    cert-manager = module.cert-manager.id
-    knative      = module.knative.id
-  }
-}
+# module "kserve" {
+#   source              = "./modules/kserve"
+#   cluster_name        = local.cluster_name
+#   argocd_namespace    = module.argocd_bootstrap.argocd_namespace
+#   target_revision     = local.target_revision
+#   project_source_repo = local.project_source_repo
+#   dependency_ids = {
+#     istio        = module.istio.id
+#     cert-manager = module.cert-manager.id
+#     knative      = module.knative.id
+#   }
+# }
 
 module "keycloak" {
   source              = "./modules/keycloak"
@@ -135,6 +135,40 @@ module "minio" {
     oidc         = module.oidc.id
   }
 }
+
+module "zookeeper" {
+  source                 = "./modules/zookeeper"
+  cluster_name           = local.cluster_name
+  base_domain            = local.base_domain
+  cluster_issuer         = local.cluster_issuer
+  argocd_namespace       = module.argocd_bootstrap.argocd_namespace
+  enable_service_monitor = local.enable_service_monitor
+  oidc                   = module.oidc.oidc
+  target_revision        = local.target_revision
+  project_source_repo    = local.project_source_repo
+  dependency_ids = {
+    argocd = module.argocd_bootstrap.id
+  }
+}
+
+module "nifi" {
+  source                 = "./modules/nifi"
+  cluster_name           = local.cluster_name
+  base_domain            = local.base_domain
+  cluster_issuer         = local.cluster_issuer
+  argocd_namespace       = module.argocd_bootstrap.argocd_namespace
+  enable_service_monitor = local.enable_service_monitor
+  oidc                   = module.oidc.oidc
+  target_revision        = local.target_revision
+  project_source_repo    = local.project_source_repo
+  dependency_ids = {
+    traefik      = module.traefik.id
+    cert-manager = module.cert-manager.id
+    oidc         = module.oidc.id
+    zookeeper    = module.zookeeper.id
+  }
+}
+
 
 module "loki-stack" {
   source           = "./modules/loki-stack/kind"
@@ -239,84 +273,84 @@ module "postgresql" {
   }
 }
 
-module "spark" {
-  source                 = "./modules/spark"
-  cluster_name           = local.cluster_name
-  base_domain            = local.base_domain
-  cluster_issuer         = local.cluster_issuer
-  argocd_namespace       = module.argocd_bootstrap.argocd_namespace
-  enable_service_monitor = local.enable_service_monitor
-  target_revision        = local.target_revision
-  project_source_repo    = local.project_source_repo
-  dependency_ids = {
-    argocd = module.argocd_bootstrap.id
-  }
-}
+# module "spark" {
+#   source                 = "./modules/spark"
+#   cluster_name           = local.cluster_name
+#   base_domain            = local.base_domain
+#   cluster_issuer         = local.cluster_issuer
+#   argocd_namespace       = module.argocd_bootstrap.argocd_namespace
+#   enable_service_monitor = local.enable_service_monitor
+#   target_revision        = local.target_revision
+#   project_source_repo    = local.project_source_repo
+#   dependency_ids = {
+#     argocd = module.argocd_bootstrap.id
+#   }
+# }
 
-module "strimzi" {
-  source                 = "./modules/strimzi"
-  cluster_name           = local.cluster_name
-  base_domain            = local.base_domain
-  cluster_issuer         = local.cluster_issuer
-  argocd_namespace       = module.argocd_bootstrap.argocd_namespace
-  enable_service_monitor = local.enable_service_monitor
-  target_revision        = local.target_revision
-  project_source_repo    = local.project_source_repo
-  dependency_ids = {
-    argocd = module.argocd_bootstrap.id
-  }
-}
+# module "strimzi" {
+#   source                 = "./modules/strimzi"
+#   cluster_name           = local.cluster_name
+#   base_domain            = local.base_domain
+#   cluster_issuer         = local.cluster_issuer
+#   argocd_namespace       = module.argocd_bootstrap.argocd_namespace
+#   enable_service_monitor = local.enable_service_monitor
+#   target_revision        = local.target_revision
+#   project_source_repo    = local.project_source_repo
+#   dependency_ids = {
+#     argocd = module.argocd_bootstrap.id
+#   }
+# }
 
-module "kafka" {
-  source                 = "./modules/kafka"
-  cluster_name           = local.cluster_name
-  base_domain            = local.base_domain
-  cluster_issuer         = local.cluster_issuer
-  argocd_namespace       = module.argocd_bootstrap.argocd_namespace
-  enable_service_monitor = local.enable_service_monitor
-  target_revision        = local.target_revision
-  argocd_project         = module.strimzi.argocd_project_name
-  project_source_repo    = local.project_source_repo
-  dependency_ids = {
-    argocd  = module.argocd_bootstrap.id
-    traefik = module.traefik.id
-    strimzi = module.strimzi.id
-  }
-}
+# module "kafka" {
+#   source                 = "./modules/kafka"
+#   cluster_name           = local.cluster_name
+#   base_domain            = local.base_domain
+#   cluster_issuer         = local.cluster_issuer
+#   argocd_namespace       = module.argocd_bootstrap.argocd_namespace
+#   enable_service_monitor = local.enable_service_monitor
+#   target_revision        = local.target_revision
+#   argocd_project         = module.strimzi.argocd_project_name
+#   project_source_repo    = local.project_source_repo
+#   dependency_ids = {
+#     argocd  = module.argocd_bootstrap.id
+#     traefik = module.traefik.id
+#     strimzi = module.strimzi.id
+#   }
+# }
 
-module "cp-schema-registry" {
-  source                 = "./modules/cp-schema-registry"
-  cluster_name           = local.cluster_name
-  base_domain            = local.base_domain
-  cluster_issuer         = local.cluster_issuer
-  argocd_namespace       = module.argocd_bootstrap.argocd_namespace
-  enable_service_monitor = local.enable_service_monitor
-  target_revision        = local.target_revision
-  argocd_project         = module.strimzi.argocd_project_name
-  kafka_broker_name      = module.kafka.broker_name
-  project_source_repo    = local.project_source_repo
-  dependency_ids = {
-    argocd = module.argocd_bootstrap.id
-    kafka  = module.kafka.id
-  }
-}
+# module "cp-schema-registry" {
+#   source                 = "./modules/cp-schema-registry"
+#   cluster_name           = local.cluster_name
+#   base_domain            = local.base_domain
+#   cluster_issuer         = local.cluster_issuer
+#   argocd_namespace       = module.argocd_bootstrap.argocd_namespace
+#   enable_service_monitor = local.enable_service_monitor
+#   target_revision        = local.target_revision
+#   argocd_project         = module.strimzi.argocd_project_name
+#   kafka_broker_name      = module.kafka.broker_name
+#   project_source_repo    = local.project_source_repo
+#   dependency_ids = {
+#     argocd = module.argocd_bootstrap.id
+#     kafka  = module.kafka.id
+#   }
+# }
 
-module "kafka-ui" {
-  source                 = "./modules/kafka-ui"
-  cluster_name           = local.cluster_name
-  base_domain            = local.base_domain
-  cluster_issuer         = local.cluster_issuer
-  argocd_namespace       = module.argocd_bootstrap.argocd_namespace
-  enable_service_monitor = local.enable_service_monitor
-  target_revision        = local.target_revision
-  kafka_broker_name      = module.kafka.broker_name
-  project_source_repo    = local.project_source_repo
-  dependency_ids = {
-    argocd             = module.argocd_bootstrap.id
-    kafka              = module.kafka.id
-    cp-schema-registry = module.cp-schema-registry.id
-  }
-}
+# module "kafka-ui" {
+#   source                 = "./modules/kafka-ui"
+#   cluster_name           = local.cluster_name
+#   base_domain            = local.base_domain
+#   cluster_issuer         = local.cluster_issuer
+#   argocd_namespace       = module.argocd_bootstrap.argocd_namespace
+#   enable_service_monitor = local.enable_service_monitor
+#   target_revision        = local.target_revision
+#   kafka_broker_name      = module.kafka.broker_name
+#   project_source_repo    = local.project_source_repo
+#   dependency_ids = {
+#     argocd             = module.argocd_bootstrap.id
+#     kafka              = module.kafka.id
+#     cp-schema-registry = module.cp-schema-registry.id
+#   }
+# }
 
 # module "mysql" {
 #   source                 = "./modules/mysql"
@@ -403,88 +437,88 @@ module "kafka-ui" {
 #   }
 # }
 
-module "mlflow" {
-  source                 = "./modules/mlflow"
-  cluster_name           = local.cluster_name
-  base_domain            = local.base_domain
-  cluster_issuer         = local.cluster_issuer
-  argocd_namespace       = module.argocd_bootstrap.argocd_namespace
-  enable_service_monitor = local.enable_service_monitor
-  target_revision        = local.target_revision
-  storage = {
-    bucket_name       = "mlflow"
-    endpoint          = module.minio.cluster_dns
-    access_key        = module.minio.minio_root_user_credentials.username
-    secret_access_key = module.minio.minio_root_user_credentials.password
-  }
-  database = {
-    user     = module.postgresql.credentials.user
-    password = module.postgresql.credentials.password
-    database = "mlflow"
-    service  = module.postgresql.cluster_dns
-  }
-  project_source_repo = local.project_source_repo
-  dependency_ids = {
-    argocd     = module.argocd_bootstrap.id
-    traefik    = module.traefik.id
-    minio      = module.minio.id
-    postgresql = module.postgresql.id
-  }
-}
+# module "mlflow" {
+#   source                 = "./modules/mlflow"
+#   cluster_name           = local.cluster_name
+#   base_domain            = local.base_domain
+#   cluster_issuer         = local.cluster_issuer
+#   argocd_namespace       = module.argocd_bootstrap.argocd_namespace
+#   enable_service_monitor = local.enable_service_monitor
+#   target_revision        = local.target_revision
+#   storage = {
+#     bucket_name       = "mlflow"
+#     endpoint          = module.minio.cluster_dns
+#     access_key        = module.minio.minio_root_user_credentials.username
+#     secret_access_key = module.minio.minio_root_user_credentials.password
+#   }
+#   database = {
+#     user     = module.postgresql.credentials.user
+#     password = module.postgresql.credentials.password
+#     database = "mlflow"
+#     service  = module.postgresql.cluster_dns
+#   }
+#   project_source_repo = local.project_source_repo
+#   dependency_ids = {
+#     argocd     = module.argocd_bootstrap.id
+#     traefik    = module.traefik.id
+#     minio      = module.minio.id
+#     postgresql = module.postgresql.id
+#   }
+# }
 
-# # module "ray" {
-# #   source                 = "./modules/ray"
-# #   cluster_name           = local.cluster_name
-# #   base_domain            = local.base_domain
-# #   cluster_issuer         = local.cluster_issuer
-# #   argocd_namespace       = module.argocd_bootstrap.argocd_namespace
-# #   enable_service_monitor = local.enable_service_monitor
-# #   target_revision        = local.target_revision
-# #   project_source_repo    = local.project_source_repo
-# #   dependency_ids = {
-# #     argocd  = module.argocd_bootstrap.id
-# #     traefik = module.traefik.id
-# #   }
-# # }
+# module "ray" {
+#   source                 = "./modules/ray"
+#   cluster_name           = local.cluster_name
+#   base_domain            = local.base_domain
+#   cluster_issuer         = local.cluster_issuer
+#   argocd_namespace       = module.argocd_bootstrap.argocd_namespace
+#   enable_service_monitor = local.enable_service_monitor
+#   target_revision        = local.target_revision
+#   project_source_repo    = local.project_source_repo
+#   dependency_ids = {
+#     argocd  = module.argocd_bootstrap.id
+#     traefik = module.traefik.id
+#   }
+# }
 
-module "jupyterhub" {
-  source                 = "./modules/jupyterhub"
-  cluster_name           = local.cluster_name
-  base_domain            = local.base_domain
-  cluster_issuer         = local.cluster_issuer
-  argocd_namespace       = module.argocd_bootstrap.argocd_namespace
-  enable_service_monitor = local.enable_service_monitor
-  target_revision        = local.target_revision
-  oidc                   = module.oidc.oidc
-  storage = {
-    bucket_name       = "jupyterhub"
-    endpoint          = module.minio.cluster_dns
-    access_key        = module.minio.minio_root_user_credentials.username
-    secret_access_key = module.minio.minio_root_user_credentials.password
-  }
-  database = {
-    user     = module.postgresql.credentials.user
-    password = module.postgresql.credentials.password
-    database = "jupyterhub"
-    endpoint = module.postgresql.cluster_dns
-  }
-  mlflow = {
-    endpoint = module.mlflow.cluster_dns
-  }
-  # ray = {
-  #   endpoint = module.ray.cluster_dns
-  # }
-  project_source_repo = local.project_source_repo
-  dependency_ids = {
-    argocd     = module.argocd_bootstrap.id
-    traefik    = module.traefik.id
-    oidc       = module.oidc.id
-    minio      = module.minio.id
-    postgresql = module.postgresql.id
-    mlflow     = module.mlflow.id
-    # ray        = module.ray.id
-  }
-}
+# module "jupyterhub" {
+#   source                 = "./modules/jupyterhub"
+#   cluster_name           = local.cluster_name
+#   base_domain            = local.base_domain
+#   cluster_issuer         = local.cluster_issuer
+#   argocd_namespace       = module.argocd_bootstrap.argocd_namespace
+#   enable_service_monitor = local.enable_service_monitor
+#   target_revision        = local.target_revision
+#   oidc                   = module.oidc.oidc
+#   storage = {
+#     bucket_name       = "jupyterhub"
+#     endpoint          = module.minio.cluster_dns
+#     access_key        = module.minio.minio_root_user_credentials.username
+#     secret_access_key = module.minio.minio_root_user_credentials.password
+#   }
+#   database = {
+#     user     = module.postgresql.credentials.user
+#     password = module.postgresql.credentials.password
+#     database = "jupyterhub"
+#     endpoint = module.postgresql.cluster_dns
+#   }
+#   mlflow = {
+#     endpoint = module.mlflow.cluster_dns
+#   }
+#   # ray = {
+#   #   endpoint = module.ray.cluster_dns
+#   # }
+#   project_source_repo = local.project_source_repo
+#   dependency_ids = {
+#     argocd     = module.argocd_bootstrap.id
+#     traefik    = module.traefik.id
+#     oidc       = module.oidc.id
+#     minio      = module.minio.id
+#     postgresql = module.postgresql.id
+#     mlflow     = module.mlflow.id
+#     # ray        = module.ray.id
+#   }
+# }
 
 # module "airflow" {
 #   source                 = "./modules/airflow"

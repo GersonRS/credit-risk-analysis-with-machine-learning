@@ -51,7 +51,7 @@ variable "cluster_issuer" {
 variable "namespace" {
   description = "Namespace where the applications's Kubernetes resources should be created. Namespace will be created in case it doesn't exist."
   type        = string
-  default     = "deepstorage"
+  default     = "nifi"
 }
 
 variable "enable_service_monitor" {
@@ -96,7 +96,7 @@ variable "project_source_repo" {
 #######################
 
 variable "oidc" {
-  description = "OIDC configuration to access the MinIO web interface."
+  description = "OIDC configuration to access the Nifi web interface."
 
   type = object({
     issuer_url              = string

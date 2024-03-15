@@ -1,0 +1,7 @@
+apiVersion: v2
+dependencies:
+  - name: nifikop
+    repository: oci://ghcr.io/konpyutaika/helm-charts
+    version: "*.*.*"
+name: nifikop
+version: "0"
