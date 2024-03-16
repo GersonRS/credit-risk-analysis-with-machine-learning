@@ -203,10 +203,10 @@ module "thanos" {
   target_revision     = local.target_revision
   project_source_repo = local.project_source_repo
   metrics_storage = {
-    bucket_name = module.minio.minio_config.buckets.1.name
+    bucket_name = "thanos-bucket"
     endpoint    = module.minio.cluster_dns
-    access_key  = module.minio.minio_config.users.1.accessKey
-    secret_key  = module.minio.minio_config.users.1.secretKey
+    access_key  = module.minio.minio_root_user_credentials.username
+    secret_key  = module.minio.minio_root_user_credentials.password
   }
   thanos = {
     oidc = module.oidc.oidc
@@ -232,10 +232,10 @@ module "kube-prometheus-stack" {
   target_revision     = local.target_revision
   project_source_repo = local.project_source_repo
   metrics_storage = {
-    bucket_name = module.minio.minio_config.buckets.1.name
-    endpoint    = module.minio.endpoint
-    access_key  = module.minio.minio_config.users.1.accessKey
-    secret_key  = module.minio.minio_config.users.1.secretKey
+    bucket_name = "thanos-bucket"
+    endpoint    = module.minio.cluster_dns
+    access_key  = module.minio.minio_root_user_credentials.username
+    secret_key  = module.minio.minio_root_user_credentials.password
   }
   prometheus = {
     oidc = module.oidc.oidc

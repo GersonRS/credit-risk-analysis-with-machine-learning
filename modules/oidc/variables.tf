@@ -44,7 +44,7 @@ variable "oidc_redirect_uris" {
 }
 
 variable "user_map" {
-  description = "List of users to be added to the DevOps Stack Realm. Note that all fields are mandatory."
+  description = "List of users to be added to the Modern GitOps Stack Realm. Note that all fields are mandatory."
   type = map(object({
     username   = string
     email      = string
