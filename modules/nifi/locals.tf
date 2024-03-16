@@ -1,6 +1,11 @@
 locals {
   helm_values = [{
     nifi = {
+      prometheus = {
+        servicemonitor = {
+          enabled = var.enable_service_monitor
+        }
+      }
       oidc = {
         url           = "${var.oidc.issuer_url}/.well-known/openid-configuration"
         client_id     = "${var.oidc.client_id}"
