@@ -1,17 +1,6 @@
 #######################
 ## Standard variables
 #######################
-
-variable "cluster_name" {
-  description = "Name given to the cluster. Value used for the ingress' URL of the application."
-  type        = string
-}
-
-variable "base_domain" {
-  description = "Base domain of the cluster. Value used for the ingress' URL of the application."
-  type        = string
-}
-
 variable "argocd_namespace" {
   description = "Namespace used by Argo CD where the Application and AppProject resources should be created."
   type        = string
@@ -45,12 +34,6 @@ variable "namespace" {
   description = "Namespace where the applications's Kubernetes resources should be created. Namespace will be created in case it doesn't exist."
   type        = string
   default     = "traefik"
-}
-
-variable "replicas" {
-  description = "Number of Traefik pods to be deployed."
-  type        = string
-  default     = "2"
 }
 
 variable "enable_service_monitor" {
@@ -93,6 +76,12 @@ variable "project_source_repo" {
 #######################
 ## Module variables
 #######################
+
+variable "replicas" {
+  description = "Number of Traefik pods to be deployed."
+  type        = number
+  default     = 2
+}
 
 variable "enable_https_redirection" {
   description = "Enable HTTP to HTTPS redirection on all ingresses."

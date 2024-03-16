@@ -12,6 +12,10 @@ output "minio_root_user_credentials" {
   sensitive = true
 }
 
+output "minio_config" {
+  value = local.minio_config
+}
+
 output "cluster_dns" {
   description = "MinIO cluster dns endpoint where the buckets are available."
   value       = "minio.${var.namespace}.svc.cluster.local:9000"
@@ -22,6 +26,6 @@ output "cluster_ip" {
 }
 
 output "endpoint" {
-  description = "MinIO endpoint external"
-  value       = "https://minio.apps.${var.cluster_name}.${var.base_domain}"
+  description = "MinIO endpoint where the buckets are available."
+  value       = format("minio.%s.%s", trimprefix("${var.subdomain}.${var.cluster_name}", "."), var.base_domain)
 }

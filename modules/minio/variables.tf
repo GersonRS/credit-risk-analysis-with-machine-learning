@@ -18,6 +18,13 @@ variable "argocd_namespace" {
   default     = "argocd"
 }
 
+variable "subdomain" {
+  description = "Subdomain of the cluster. Value used for the ingress' URL of the application."
+  type        = string
+  default     = "apps"
+  nullable    = false
+}
+
 variable "argocd_project" {
   description = "Name of the Argo CD AppProject where the Application should be created. If not set, the Application will be created in a new AppProject only for this Application."
   type        = string
@@ -45,7 +52,7 @@ variable "target_revision" {
 variable "cluster_issuer" {
   description = "SSL certificate issuer to use. Usually you would configure this value as `letsencrypt-staging` or `letsencrypt-prod` on your root `*.tf` files."
   type        = string
-  default     = "ca-issuer"
+  default     = "selfsigned-issuer"
 }
 
 variable "namespace" {

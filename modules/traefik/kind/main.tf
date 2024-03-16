@@ -1,8 +1,5 @@
 module "traefik" {
-  source = "../"
-
-  cluster_name             = var.cluster_name
-  base_domain              = var.base_domain
+  source                   = "../"
   argocd_namespace         = var.argocd_namespace
   argocd_project           = var.argocd_project
   argocd_labels            = var.argocd_labels
@@ -13,10 +10,8 @@ module "traefik" {
   app_autosync             = var.app_autosync
   enable_https_redirection = var.enable_https_redirection
   project_source_repo      = var.project_source_repo
-
-  helm_values = concat(local.helm_values, var.helm_values)
-
-  dependency_ids = var.dependency_ids
+  helm_values              = concat(local.helm_values, var.helm_values)
+  dependency_ids           = var.dependency_ids
 }
 
 data "kubernetes_service" "traefik" {

@@ -18,6 +18,13 @@ variable "argocd_namespace" {
   default     = "argocd"
 }
 
+variable "subdomain" {
+  description = "Subdomain of the cluster. Value used for the ingress' URL of the application."
+  type        = string
+  default     = "apps"
+  nullable    = false
+}
+
 variable "argocd_project" {
   description = "Name of the Argo CD AppProject where the Application should be created. If not set, the Application will be created in a new AppProject only for this Application."
   type        = string
@@ -45,13 +52,13 @@ variable "target_revision" {
 variable "cluster_issuer" {
   description = "SSL certificate issuer to use. Usually you would configure this value as `letsencrypt-staging` or `letsencrypt-prod` on your root `*.tf` files."
   type        = string
-  default     = "ca-issuer"
+  default     = "selfsigned-issuer"
 }
 
 variable "namespace" {
   description = "Namespace where the applications's Kubernetes resources should be created. Namespace will be created in case it doesn't exist."
   type        = string
-  default     = "monitoring"
+  default     = "kube-prometheus-stack"
 }
 
 variable "helm_values" {
@@ -81,9 +88,8 @@ variable "app_autosync" {
 }
 
 variable "dependency_ids" {
-  description = "IDs of the other modules on which this module depends on."
-  type        = map(string)
-  default     = {}
+  type    = map(string)
+  default = {}
 }
 
 variable "project_source_repo" {

@@ -31,7 +31,6 @@ resource "helm_release" "argocd" {
   }
 }
 
-# TODO Consider chosing better names than control_plane and workers
 resource "argocd_project" "modern_gitops_stack_applications" {
   for_each = var.argocd_projects
 

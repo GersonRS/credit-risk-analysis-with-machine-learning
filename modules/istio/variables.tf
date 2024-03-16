@@ -2,11 +2,6 @@
 ## Standard variables
 #######################
 
-variable "cluster_name" {
-  description = "Name given to the cluster. Value used for naming some the resources created by the module."
-  type        = string
-}
-
 variable "argocd_namespace" {
   description = "Namespace used by Argo CD where the Application and AppProject resources should be created."
   type        = string

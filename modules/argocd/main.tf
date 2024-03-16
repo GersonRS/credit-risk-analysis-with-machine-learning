@@ -76,7 +76,8 @@ resource "argocd_application" "this" {
       repo_url        = var.project_source_repo
       target_revision = var.target_revision
       helm {
-        values = data.utils_deep_merge_yaml.values.output
+        release_name = "argocd"
+        values       = data.utils_deep_merge_yaml.values.output
       }
     }
 
@@ -107,8 +108,6 @@ resource "argocd_application" "this" {
       sync_options = [
         "CreateNamespace=true"
       ]
-
-
     }
   }
 

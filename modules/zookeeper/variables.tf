@@ -2,11 +2,6 @@
 ## Standard variables
 #######################
 
-variable "cluster_name" {
-  description = "Name given to the cluster. Value used for naming some the resources created by the module."
-  type        = string
-}
-
 variable "base_domain" {
   description = "Base domain of the cluster. Value used for the ingress' URL of the application."
   type        = string

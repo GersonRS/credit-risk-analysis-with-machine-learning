@@ -2,6 +2,11 @@ resource "null_resource" "dependencies" {
   triggers = var.dependency_ids
 }
 
+resource "random_password" "minio_root_secretkey" {
+  length  = 16
+  special = false
+}
+
 resource "argocd_project" "this" {
   count = var.argocd_project == null ? 1 : 0
 
@@ -38,7 +43,6 @@ data "utils_deep_merge_yaml" "values" {
   input = [for i in concat(local.helm_values, var.helm_values) : yamlencode(i)]
 }
 
-
 resource "argocd_application" "this" {
   metadata {
     name      = var.destination_cluster != "in-cluster" ? "minio-${var.destination_cluster}" : "minio"
@@ -64,7 +68,8 @@ resource "argocd_application" "this" {
       path            = "charts/minio"
       target_revision = var.target_revision
       helm {
-        values = data.utils_deep_merge_yaml.values.output
+        release_name = "minio"
+        values       = data.utils_deep_merge_yaml.values.output
       }
     }
 
@@ -95,8 +100,6 @@ resource "argocd_application" "this" {
       sync_options = [
         "CreateNamespace=true"
       ]
-
-
     }
   }
 

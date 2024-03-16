@@ -12,21 +12,23 @@ variable "base_domain" {
   type        = string
 }
 
+variable "subdomain" {
+  description = "Subdomain of the cluster. Value used for the ingress' URL of the application."
+  type        = string
+  default     = "apps"
+  nullable    = false
+}
+
 variable "cluster_issuer" {
   description = "SSL certificate issuer to use. In this module it is used to conditionally add extra arguments to the OIDC configuration."
   type        = string
-  default     = "ca-issuer"
+  default     = "selfsigned-issuer"
 }
 
 variable "dependency_ids" {
   description = "IDs of the other modules on which this module depends on."
   type        = map(string)
   default     = {}
-}
-
-variable "project_source_repo" {
-  description = "Repository allowed to be scraped in this AppProject."
-  type        = string
 }
 
 #######################
@@ -42,7 +44,7 @@ variable "oidc_redirect_uris" {
 }
 
 variable "user_map" {
-  description = "List of users to be added to the GitOps Stack Realm. Note that all fields are mandatory."
+  description = "List of users to be added to the DevOps Stack Realm. Note that all fields are mandatory."
   type = map(object({
     username   = string
     email      = string

@@ -1,13 +1,6 @@
-resource "random_password" "minio_root_secretkey" {
-  length  = 32
-  special = false
-}
-
 locals {
-  domain      = format("minio.apps.%s", var.base_domain)
-  domain_full = format("minio.apps.%s.%s", var.cluster_name, var.base_domain)
-
-  self_signed_cert_enabled = var.cluster_issuer == "ca-issuer" || var.cluster_issuer == "letsencrypt-staging"
+  domain      = format("minio.%s", trimprefix("${var.subdomain}.${var.base_domain}", "."))
+  domain_full = format("minio.%s.%s", trimprefix("${var.subdomain}.${var.cluster_name}", "."), var.base_domain)
 
   self_signed_cert = {
     extraVolumeMounts = [
@@ -41,7 +34,7 @@ locals {
         comment      = ""
       }
     },
-    local.self_signed_cert_enabled ? local.self_signed_cert : null
+    var.cluster_issuer != "letsencrypt-prod" ? local.self_signed_cert : null
   ) : null
 
   helm_values = [{
@@ -64,10 +57,7 @@ locals {
           annotations = {
             "cert-manager.io/cluster-issuer"                   = "${var.cluster_issuer}"
             "traefik.ingress.kubernetes.io/router.entrypoints" = "websecure"
-            "traefik.ingress.kubernetes.io/router.middlewares" = "traefik-withclustername@kubernetescrd"
             "traefik.ingress.kubernetes.io/router.tls"         = "true"
-            "ingress.kubernetes.io/ssl-redirect"               = "true"
-            "kubernetes.io/ingress.allow-http"                 = "false"
           }
           hosts = [
             local.domain,
@@ -166,6 +156,16 @@ locals {
     ],
     users = [
       {
+        accessKey = "loki-user"
+        secretKey = random_password.minio_root_secretkey.result
+        policy    = "loki-policy"
+      },
+      {
+        accessKey = "thanos-user"
+        secretKey = random_password.minio_root_secretkey.result
+        policy    = "thanos-policy"
+      },
+      {
         accessKey = "mlflow-user"
         secretKey = random_password.minio_root_secretkey.result
         policy    = "mlflow-policy"
@@ -179,16 +179,6 @@ locals {
         accessKey = "jupterhub-user"
         secretKey = random_password.minio_root_secretkey.result
         policy    = "jupterhub-policy"
-      },
-      {
-        accessKey = "loki-user"
-        secretKey = random_password.minio_root_secretkey.result
-        policy    = "loki-policy"
-      },
-      {
-        accessKey = "thanos-user"
-        secretKey = random_password.minio_root_secretkey.result
-        policy    = "thanos-policy"
       }
     ],
     buckets = [

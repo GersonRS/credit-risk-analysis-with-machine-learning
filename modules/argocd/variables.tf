@@ -18,6 +18,13 @@ variable "argocd_namespace" {
   default     = "argocd"
 }
 
+variable "subdomain" {
+  description = "Subdomain of the cluster. Value used for the ingress' URL of the application."
+  type        = string
+  default     = "apps"
+  nullable    = false
+}
+
 variable "argocd_project" {
   description = "Name of the Argo CD AppProject where the Application should be created. If not set, the Application will be created in a new AppProject only for this Application."
   type        = string
@@ -69,9 +76,8 @@ variable "app_autosync" {
 }
 
 variable "dependency_ids" {
-  description = "IDs of the other modules on which this module depends on."
-  type        = map(string)
-  default     = {}
+  type    = map(string)
+  default = {}
 }
 
 variable "project_source_repo" {
